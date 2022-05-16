@@ -33,7 +33,7 @@ defmodule FreeBSD.MixProject do
     [
       "README.md",
       "lib/**/*.ex",
-      "freebsd/Makefile.eex"
+      "freebsd/*.eex"
     ]
   end
 
@@ -58,7 +58,8 @@ defmodule FreeBSD.MixProject do
       github_account: "patmaddox",
       github_project: "ex_freebsd",
       github_tag: "tbd",
-      maintainer: "pat@patmaddox.com"
+      maintainer: "pat@patmaddox.com",
+      www: "https://github.com/patmaddox/ex_freebsd"
     ]
   end
 end
