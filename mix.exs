@@ -28,10 +28,19 @@ defmodule FreeBSD.MixProject do
     []
   end
 
+  defp files do
+    [
+      "README.md",
+      "lib/**/*.ex",
+      "freebsd/Makefile.eex"
+    ]
+  end
+
   defp package do
     [
       licenses: ["BSD-2-Clause-FreeBSD"],
-      links: %{"GitHub" => "https://github.com/patmaddox/ex_freebsd"}
+      links: %{"GitHub" => "https://github.com/patmaddox/ex_freebsd"},
+      files: files()
     ]
   end
 
