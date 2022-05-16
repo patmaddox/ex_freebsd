@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Freebsd do
+defmodule Mix.Tasks.Freebsd.Port do
   @moduledoc "Generate FreeBSD port files: `mix help freebsd`"
 
   use Mix.Task
