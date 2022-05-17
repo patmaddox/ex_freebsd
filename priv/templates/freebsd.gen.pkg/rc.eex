@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# PROVIDE: <%= @port_name %>
+# REQUIRE: DAEMON
+
+. /etc/rc.subr
+
+name="<%= @port_name %>"
+rcvar="<%= @port_name %>_enable"
+command="<%= @pkg_prefix %>/bin/<%= @port_name %>"
+extra_commands="pid remote"
+
+start_cmd="${command} daemon"
+stop_cmd="${command} stop"
+restart_cmd="${command} restart"
+pid_cmd="${command} pid"
+status_cmd="<%= @port_name %>_status"
+remote_cmd="<%= @port_name %>_remote"
+
+<%= @port_name %>_status()
+{
+    if $pid_cmd > /dev/null 2>&1; then
+	echo "<%= @port_name %> is running."
+    else
+	echo "<%= @port_name %> is not running."
+    fi
+}
+
+<%= @port_name %>_remote()
+{
+    if $pid_cmd > /dev/null 2>&1; then
+	export TERM=xterm
+	$command remote
+    else
+	echo "<%= @port_name %> is not running."
+    fi
+}
+
+load_rc_config $name
+run_rc_command "$1"
