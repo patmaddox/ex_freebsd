@@ -1,11 +1,10 @@
-# FreeBSD
+# ExFreeBSD
 
-**TODO: Add description**
+Documentation: <https://hexdocs.pm/freebsd>
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `freebsd` to your list of dependencies in `mix.exs`:
+Add `freebsd` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -15,7 +14,17 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/freebsd>.
+## Usage
 
+1. `mix freebsd.gen.pkg`
+2. Add `freebsd:` and `package:` keys to mix project config (see `config/mix.exs` for an example).
+3. `mix freebsd.pkg`
+
+`mix freebsd.pkg` will generate a FreeBSD .pkg file under freebsd/ which you can then install as usual.
+
+The generated files will automatically produce:
+
+- `/usr/local/bin/<app_name>`
+- `/usr/local/etc/rc.d/<app_name>`
+
+You may modify the generated files however you like, and rebuild the package.
