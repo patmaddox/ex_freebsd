@@ -33,7 +33,7 @@ defmodule FreeBSD.MixProject do
     [
       "README.md",
       "lib/**/*.ex",
-      "freebsd/*.eex"
+      "priv/**/**.eex"
     ]
   end
 
