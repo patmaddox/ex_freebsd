@@ -10,22 +10,23 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     manifest()
     pkg_descr()
     stage()
+    rc()
     plist()
     pkg()
   end
 
   defp pkg() do
     System.cmd("pkg", [
-	  "create",
-	  "-m",
-	  tmp_dir(),
-	  "-r",
-	  stage_dir(),
-	  "-p",
-	  "#{tmp_dir()}/pkg-plist",
-	  "-o",
-	  "freebsd"]
-    )
+      "create",
+      "-m",
+      tmp_dir(),
+      "-r",
+      stage_dir(),
+      "-p",
+      "#{tmp_dir()}/pkg-plist",
+      "-o",
+      "freebsd"
+    ])
   end
 
   defp manifest() do
@@ -38,13 +39,22 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     File.write!("#{tmp_dir()}/+DESC", result)
   end
 
+  defp rc() do
+    rc_dir = "#{install_dir()}/etc/rc.d"
+    rc_file = "#{rc_dir}/#{FreeBSD.port_name()}"
+    File.mkdir_p!(rc_dir)
+    result = EEx.eval_file("freebsd/rc.eex", assigns: FreeBSD.config())
+    File.write!(rc_file, result)
+    File.chmod!(rc_file, 0o755)
+  end
+
   defp prep_tmp() do
     File.rm_rf!(tmp_dir())
     File.mkdir_p!(tmp_dir())
   end
 
   defp stage() do
-    libexec_dir = "#{stage_dir()}#{FreeBSD.pkg_prefix()}/libexec/#{FreeBSD.port_name()}"
+    libexec_dir = "#{install_dir()}/libexec/#{FreeBSD.port_name()}"
     File.mkdir_p!(libexec_dir)
     File.cp_r!(rel_dir(), libexec_dir)
   end
@@ -57,12 +67,14 @@ defmodule Mix.Tasks.Freebsd.Pkg do
       |> Path.wildcard()
       |> Stream.filter(&File.regular?(&1))
       |> Stream.map(&String.replace(&1, "#{stage_dir()}#{FreeBSD.pkg_prefix()}/", ""))
-      |> Stream.map(& "#{&1}\n")
+      |> Stream.map(&"#{&1}\n")
       |> Stream.into(plist_file)
       |> Stream.run()
   end
 
   defp stage_dir(), do: "#{tmp_dir()}/stage"
+
+  defp install_dir(), do: "#{stage_dir()}#{FreeBSD.pkg_prefix()}"
 
   defp tmp_dir(), do: "tmp/freebsd"
 
