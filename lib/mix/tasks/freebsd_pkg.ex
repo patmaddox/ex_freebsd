@@ -10,6 +10,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     manifest()
     pkg_descr()
     stage()
+    bin_script()
     rc()
     plist()
     pkg()
@@ -39,6 +40,15 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     File.write!("#{tmp_dir()}/+DESC", result)
   end
 
+  defp bin_script() do
+    File.mkdir_p("#{install_dir()}/bin")
+
+    File.ln_s!(
+      "#{FreeBSD.pkg_prefix()}/libexec/#{FreeBSD.port_name()}/bin/#{FreeBSD.port_name()}",
+      "#{install_dir()}/bin/#{FreeBSD.port_name()}"
+    )
+  end
+
   defp rc() do
     rc_dir = "#{install_dir()}/etc/rc.d"
     rc_file = "#{rc_dir}/#{FreeBSD.port_name()}"
@@ -65,7 +75,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     :ok =
       "#{stage_dir()}/**/*"
       |> Path.wildcard()
-      |> Stream.filter(&File.regular?(&1))
+      |> Stream.filter(&Enum.member?([:regular, :symlink], File.lstat!(&1).type))
       |> Stream.map(&String.replace(&1, "#{stage_dir()}#{FreeBSD.pkg_prefix()}/", ""))
       |> Stream.map(&"#{&1}\n")
       |> Stream.into(plist_file)
