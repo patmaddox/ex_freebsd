@@ -9,9 +9,9 @@ defmodule FreeBSD do
 
   def pkg_comment, do: Mix.Project.config() |> Keyword.fetch!(:description)
 
-  def pkg_maintainer, do: freebsd_config() |> Keyword.fetch!(:maintainer)
+  def pkg_www, do: Mix.Project.config() |> Keyword.fetch!(:homepage_url)
 
-  def pkg_www, do: freebsd_config() |> Keyword.fetch!(:www)
+  def pkg_maintainer, do: freebsd_config() |> Keyword.fetch!(:maintainer)
 
   def pkg_prefix, do: freebsd_config() |> Keyword.fetch!(:pkg_prefix)
 

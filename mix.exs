@@ -55,7 +55,6 @@ defmodule FreeBSD.MixProject do
   defp freebsd do
     [
       maintainer: "pat@patmaddox.com",
-      www: "https://github.com/patmaddox/ex_freebsd",
       pkg_prefix: "/usr/local"
     ]
   end

@@ -7,20 +7,24 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   @shortdoc "Generates FreeBSD pkg files"
   def run(_) do
     prep_tmp()
+
+    # elixir stuff
     manifest()
-    pkg_descr()
     stage()
+
+    # FreeBSD stuff
     bin_script()
     rc()
     plist()
+
     pkg()
   end
 
   defp pkg() do
     System.cmd("pkg", [
       "create",
-      "-m",
-      tmp_dir(),
+      "-M",
+      manifest_file(),
       "-r",
       stage_dir(),
       "-p",
@@ -32,13 +36,10 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
   defp manifest() do
     result = EEx.eval_file("freebsd/MANIFEST.eex")
-    File.write!("#{tmp_dir()}/+MANIFEST", result)
+    File.write!(manifest_file(), result)
   end
 
-  defp pkg_descr() do
-    result = EEx.eval_file("freebsd/pkg-descr.eex")
-    File.write!("#{tmp_dir()}/+DESC", result)
-  end
+  defp manifest_file(), do: "#{tmp_dir()}/+MANIFEST"
 
   defp bin_script() do
     File.mkdir_p("#{install_dir()}/bin")
