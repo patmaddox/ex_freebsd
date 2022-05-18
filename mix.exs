@@ -41,6 +41,8 @@ defmodule FreeBSD.MixProject do
   defp files do
     [
       "README.md",
+      "LICENSE",
+      "mix.exs",
       "lib/**/*.ex",
       "priv/**/**.eex"
     ]
