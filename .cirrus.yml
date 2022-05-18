@@ -4,8 +4,7 @@ freebsd_instance:
 build_task:
   upgrade_packages_script:
     - mkdir -p /usr/local/etc/pkg/repos/
-    - |
-      echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' > /usr/local/etc/pkg/repos/FreeBSD.conf
+    - cat /etc/pkg/FreeBSD.conf | sed -e 's/quarterly/latest/' > /usr/local/etc/pkg/repos/FreeBSD.conf
     - pkg upgrade -y
   install_elixir_script:
     - pkg install -y elixir
