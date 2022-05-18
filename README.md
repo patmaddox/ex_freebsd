@@ -15,7 +15,7 @@ Add `freebsd` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:freebsd, "~> 0.3.2"}
+    {:freebsd, "~> 0.3.2", runtime: false}
   ]
 end
 ```
