@@ -1,6 +1,6 @@
 # ExFreeBSD
 
-Helping mix releases become FreeBSD packages, since 2022.
+Helping [Elixir mix releases](https://hexdocs.pm/mix/Mix.Tasks.Release.html) become [FreeBSD packages](https://docs.freebsd.org/en/books/handbook/ports/), since 2022.
 
 Documentation: <https://hexdocs.pm/freebsd>
 
