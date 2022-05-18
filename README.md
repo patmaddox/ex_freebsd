@@ -1,5 +1,7 @@
 # ExFreeBSD
 
+Helping mix releases become FreeBSD packages, since 2022.
+
 Documentation: <https://hexdocs.pm/freebsd>
 
 ## Installation
