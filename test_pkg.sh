@@ -23,7 +23,7 @@ fi
 
 echo "Starting service..."
 service freebsd start
-sleep 0.2
+sleep 1
 echo "Checking status..."
 service freebsd status
 result=$?
