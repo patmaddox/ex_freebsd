@@ -5,8 +5,12 @@
 
 . /etc/rc.subr
 
-name="<%= @pkg_name %>"
-rcvar="<%= @pkg_name %>_enable"
+name=<%= @pkg_name %>
+rcvar=<%= @pkg_name %>_enable
+load_rc_config <%= @pkg_name %>
+
+: ${<%= @pkg_name %>_env_file:=<%= FreeBSD.pkg_prefix() %>/etc/<%= @pkg_name %>.conf}
+
 command="<%= FreeBSD.pkg_prefix() %>/bin/<%= @pkg_name %>"
 extra_commands="pid remote"
 
@@ -14,8 +18,8 @@ start_cmd="${command} daemon"
 stop_cmd="${command} stop"
 restart_cmd="${command} restart"
 pid_cmd="${command} pid"
-status_cmd="<%= @pkg_name %>_status"
-remote_cmd="<%= @pkg_name %>_remote"
+status_cmd=<%= @pkg_name %>_status
+remote_cmd=<%= @pkg_name %>_remote
 
 _check_running()
 {

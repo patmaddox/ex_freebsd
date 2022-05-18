@@ -59,6 +59,8 @@ end
 
 Run them using [`service(8)`](https://www.freebsd.org/cgi/man.cgi?service(8)).
 
+After installing the package, you should define application-specific environment variables in `/usr/local/etc/<appname>.conf`.
+
 ## Roadmap
 
 - configure log / tmp / var files
