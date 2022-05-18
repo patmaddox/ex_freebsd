@@ -68,3 +68,4 @@ After installing the package, you should define application-specific environment
 - list dependencies
 - auto-name package w/ CI suffix: `<app>-ci-<branch>-<version>p<timestamp>`
 - MANIFEST conflict for `<app> <app>-ci-*`
+- run as non-privileged user
