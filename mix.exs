@@ -65,8 +65,7 @@ defmodule FreeBSD.MixProject do
 
   defp freebsd do
     [
-      maintainer: "pat@patmaddox.com",
-      pkg_prefix: "/usr/local"
+      maintainer: "pat@patmaddox.com"
     ]
   end
 end

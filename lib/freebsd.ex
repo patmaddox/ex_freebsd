@@ -14,7 +14,7 @@ defmodule FreeBSD do
 
   def pkg_maintainer, do: freebsd_config() |> Keyword.fetch!(:maintainer)
 
-  def pkg_prefix, do: freebsd_config() |> Keyword.fetch!(:pkg_prefix)
+  def pkg_prefix, do: "/usr/local"
 
   defp freebsd_config, do: Mix.Project.config() |> Keyword.fetch!(:freebsd)
 end
