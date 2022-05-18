@@ -6,7 +6,7 @@ Documentation: <https://hexdocs.pm/freebsd>
 
 ## Installation
 
-You DO need `elixir` to build your release and package. You can install it with `pkg install -y elixir`.
+You DO need `elixir` to build your release and package. You can install it with `pkg install elixir`.
 
 You DO NOT need `elixir` to run your app, assuming your mix release configures `include_erts: true` (which is the default).
 
