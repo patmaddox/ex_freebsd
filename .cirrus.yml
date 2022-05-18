@@ -1,0 +1,15 @@
+freebsd_instance:
+  image_family: freebsd-13-1
+
+build_task:
+  upgrade_packages_script:
+    - mkdir -p /usr/local/etc/pkg/repos/
+    - |
+      echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' > /usr/local/etc/pkg/repos/FreeBSD.conf
+    - pkg upgrade -y
+  install_elixir_script:
+    - pkg install -y elixir
+    - mix local.hex --force
+    - mix local.rebar --force
+  test_script:
+    - ./test_pkg.sh
