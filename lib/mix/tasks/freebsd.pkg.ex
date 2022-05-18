@@ -32,6 +32,8 @@ defmodule Mix.Tasks.Freebsd.Pkg do
       "-o",
       "freebsd"
     ])
+
+    IO.puts("Wrote #{pkg_file()}")
   end
 
   defp manifest() do
@@ -92,4 +94,6 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   defp build_dir(), do: "_build/#{Mix.env()}"
 
   defp rel_dir(), do: "#{build_dir()}/rel/#{FreeBSD.pkg_name()}"
+
+  defp pkg_file(), do: "freebsd/#{FreeBSD.pkg_name()}-#{FreeBSD.pkg_version()}.pkg"
 end

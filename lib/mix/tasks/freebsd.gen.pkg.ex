@@ -9,6 +9,11 @@ defmodule Mix.Tasks.Freebsd.Gen.Pkg do
     Generator.create_directory("freebsd")
 
     ["MANIFEST.eex", "rc.eex"]
-    |> Enum.each(&Generator.copy_file("priv/templates/freebsd.gen.pkg/#{&1}", "freebsd/#{&1}"))
+    |> Enum.each(
+      &Generator.copy_file(
+        Application.app_dir(:freebsd, "priv/templates/freebsd.gen.pkg/#{&1}"),
+        "freebsd/#{&1}"
+      )
+    )
   end
 end

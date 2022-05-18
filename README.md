@@ -61,7 +61,8 @@ Run them using [`service(8)`](https://www.freebsd.org/cgi/man.cgi?service(8)).
 
 ## Roadmap
 
-- generate / copy `rc.conf`
+- configure log / tmp / var files
+- generate / copy `rc.conf` (auto-generate certain vars needed for ecto / phoenix / etc if present)
 - list dependencies
 - auto-name package w/ CI suffix: `<app>-ci-<branch>-<version>p<timestamp>`
 - MANIFEST conflict for `<app> <app>-ci-*`
