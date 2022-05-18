@@ -14,17 +14,31 @@ def deps do
 end
 ```
 
+1. `mix freebsd.gen.pkg`
+2. Edit `freebsd/*.eex` as desired (particularly desc in `freebsd/MANIFEST.eex`
+3. Add a `freebsd` key to `mix.exs` project config.
+
+```elixir
+  def project do
+    [
+      # ExFreeBSD requires these standard keys:
+      app: :freebsd,
+      version: "0.2.0",
+      description: description(),
+      homepage_url: "https://github.com/patmaddox/ex_freebsd",
+      # and adds this one:
+      freebsd: freebsd()
+    ]
+  end
+
+  defp freebsd do
+    [
+      maintainer: "pat@patmaddox.com",
+      pkg_prefix: "/usr/local"
+    ]
+  end
+```
+
 ## Usage
 
-1. `mix freebsd.gen.pkg`
-2. Add `freebsd:` and `package:` keys to mix project config (see `mix.exs` for an example).
-3. `mix freebsd.pkg`
-
-`mix freebsd.pkg` will generate a FreeBSD .pkg file under freebsd/ which you can then install as usual.
-
-The generated files will automatically produce:
-
-- `/usr/local/bin/<app_name>`
-- `/usr/local/etc/rc.d/<app_name>`
-
-You may modify the generated files however you like, and rebuild the package.
+`mix freebsd.pkg` will produce a FreeBSD .pkg file under freebsd/ which you can then install as usual.
