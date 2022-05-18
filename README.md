@@ -15,7 +15,7 @@ Add `freebsd` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:freebsd, "~> 0.3.1"}
+    {:freebsd, "~> 0.3.2"}
   ]
 end
 ```
@@ -29,7 +29,7 @@ end
     [
       # ExFreeBSD requires these standard keys:
       app: :freebsd,
-      version: "0.3.1",
+      version: "0.3.2",
       description: description(),
       homepage_url: "https://github.com/patmaddox/ex_freebsd",
       # and adds this one:

@@ -5,7 +5,7 @@ defmodule FreeBSD.MixProject do
     [
       app: :freebsd,
       name: "ExFreeBSD",
-      version: "0.3.1",
+      version: "0.3.2",
       elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
