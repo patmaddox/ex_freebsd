@@ -6,6 +6,10 @@ Documentation: <https://hexdocs.pm/freebsd>
 
 ## Installation
 
+You DO need `elixir` to build your release and package. You can install it with `pkg install -y elixir`.
+
+You DO NOT need `elixir` to run your app, assuming your mix release configures `include_erts: true` (which is the default).
+
 Add `freebsd` to your list of dependencies in `mix.exs`:
 
 ```elixir
@@ -44,3 +48,14 @@ end
 ## Usage
 
 `mix freebsd.pkg` will produce a FreeBSD .pkg file under freebsd/ which you can then install as usual.
+
+`freebsd/rc.eex` produces `/usr/local/etc/rc.d/<appname>` which provides the following commands:
+
+- `start`
+- `stop`
+- `restart`
+- `status`
+- `pid`
+- `remote`
+
+Run them using [`service(8)`](https://www.freebsd.org/cgi/man.cgi?service(8)).
