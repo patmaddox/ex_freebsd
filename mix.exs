@@ -4,7 +4,8 @@ defmodule FreeBSD.MixProject do
   def project do
     [
       app: :freebsd,
-      version: "0.3.0",
+      name: "ExFreeBSD",
+      version: "0.3.1",
       elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -33,7 +34,7 @@ defmodule FreeBSD.MixProject do
   defp docs do
     [
       main: "README",
-      extras: ["README.md"]
+      extras: ["README.md": [filename: "README", title: "ExFreeBSD"]]
     ]
   end
 
