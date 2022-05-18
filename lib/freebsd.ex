@@ -1,6 +1,7 @@
 defmodule FreeBSD do
   @moduledoc """
-  Documentation for `FreeBSD`.
+  `mix.exs` config values that will be assigned to the EEX templates when
+  building the package.
   """
 
   def pkg_name, do: Mix.Project.config() |> Keyword.fetch!(:app)

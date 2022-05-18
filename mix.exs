@@ -8,6 +8,7 @@ defmodule FreeBSD.MixProject do
       elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      docs: docs(),
       package: package(),
       description: description(),
       source_url: "https://github.com/patmaddox/ex_freebsd",
@@ -26,6 +27,13 @@ defmodule FreeBSD.MixProject do
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+    ]
+  end
+
+  defp docs do
+    [
+      main: "README",
+      extras: ["README.md"]
     ]
   end
 
