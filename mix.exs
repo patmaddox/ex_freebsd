@@ -54,10 +54,6 @@ defmodule FreeBSD.MixProject do
 
   defp freebsd do
     [
-      categories: ["patmaddox"],
-      github_account: "patmaddox",
-      github_project: "ex_freebsd",
-      github_tag: "tbd",
       maintainer: "pat@patmaddox.com",
       www: "https://github.com/patmaddox/ex_freebsd",
       pkg_prefix: "/usr/local"

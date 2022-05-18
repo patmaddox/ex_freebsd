@@ -31,12 +31,12 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   end
 
   defp manifest() do
-    result = EEx.eval_file("freebsd/MANIFEST.eex", assigns: FreeBSD.config())
+    result = EEx.eval_file("freebsd/MANIFEST.eex")
     File.write!("#{tmp_dir()}/+MANIFEST", result)
   end
 
   defp pkg_descr() do
-    result = EEx.eval_file("freebsd/pkg-descr.eex", assigns: FreeBSD.config())
+    result = EEx.eval_file("freebsd/pkg-descr.eex")
     File.write!("#{tmp_dir()}/+DESC", result)
   end
 
@@ -44,16 +44,16 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     File.mkdir_p("#{install_dir()}/bin")
 
     File.ln_s!(
-      "#{FreeBSD.pkg_prefix()}/libexec/#{FreeBSD.port_name()}/bin/#{FreeBSD.port_name()}",
-      "#{install_dir()}/bin/#{FreeBSD.port_name()}"
+      "#{FreeBSD.pkg_prefix()}/libexec/#{FreeBSD.pkg_name()}/bin/#{FreeBSD.pkg_name()}",
+      "#{install_dir()}/bin/#{FreeBSD.pkg_name()}"
     )
   end
 
   defp rc() do
     rc_dir = "#{install_dir()}/etc/rc.d"
-    rc_file = "#{rc_dir}/#{FreeBSD.port_name()}"
+    rc_file = "#{rc_dir}/#{FreeBSD.pkg_name()}"
     File.mkdir_p!(rc_dir)
-    result = EEx.eval_file("freebsd/rc.eex", assigns: FreeBSD.config())
+    result = EEx.eval_file("freebsd/rc.eex", assigns: %{pkg_name: FreeBSD.pkg_name()})
     File.write!(rc_file, result)
     File.chmod!(rc_file, 0o755)
   end
@@ -64,7 +64,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   end
 
   defp stage() do
-    libexec_dir = "#{install_dir()}/libexec/#{FreeBSD.port_name()}"
+    libexec_dir = "#{install_dir()}/libexec/#{FreeBSD.pkg_name()}"
     File.mkdir_p!(libexec_dir)
     File.cp_r!(rel_dir(), libexec_dir)
   end
@@ -90,5 +90,5 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
   defp build_dir(), do: "_build/#{Mix.env()}"
 
-  defp rel_dir(), do: "#{build_dir()}/rel/#{FreeBSD.port_name()}"
+  defp rel_dir(), do: "#{build_dir()}/rel/#{FreeBSD.pkg_name()}"
 end
