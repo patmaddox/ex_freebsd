@@ -59,3 +59,10 @@ end
 - `remote`
 
 Run them using [`service(8)`](https://www.freebsd.org/cgi/man.cgi?service(8)).
+
+## Roadmap
+
+- generate / copy `rc.conf`
+- list dependencies
+- auto-name package w/ CI suffix (<app>-ci-<branch>-<version>p<timestamp>
+- MANIFEST conflict for `<app> <app>-ci-*`
