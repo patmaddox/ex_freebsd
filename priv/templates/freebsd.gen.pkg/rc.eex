@@ -12,7 +12,7 @@ load_rc_config <%= @pkg_name %>
 : ${<%= @pkg_name %>_env_file:=<%= FreeBSD.pkg_prefix() %>/etc/<%= @pkg_name %>.conf}
 
 command="<%= FreeBSD.pkg_prefix() %>/bin/<%= @pkg_name %>"
-extra_commands="pid remote"
+extra_commands="pid remote eval rpc"
 
 start_cmd="${command} daemon"
 stop_cmd="${command} stop"
@@ -20,6 +20,8 @@ restart_cmd="${command} restart"
 pid_cmd="${command} pid"
 status_cmd=<%= @pkg_name %>_status
 remote_cmd=<%= @pkg_name %>_remote
+eval_cmd=<%= @pkg_name %>_eval
+rpc_cmd=<%= @pkg_name %>_rpc
 
 _check_running()
 {
@@ -42,5 +44,16 @@ _check_running()
     $command remote
 }
 
+<%= @pkg_name %>_eval()
+{
+    $command eval "$1"
+}
+
+<%= @pkg_name %>_rpc()
+{
+    _check_running
+    $command rpc "$1"
+}
+
 load_rc_config $name
-run_rc_command "$1"
+run_rc_command "$@"

@@ -33,4 +33,13 @@ then
     exit 1
 fi
 
+echo "Running rpc command..."
+result=$(service freebsd rpc "IO.write\(1+1\)") # have to escape () ?  ugh...
+
+if [ $result != "2" ]
+then
+  echo "rpc result should return 2; Got $result instead"
+  exit 1
+fi
+
 echo "All systems go!"
