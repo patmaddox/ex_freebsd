@@ -6,10 +6,5 @@ www: "<%= FreeBSD.pkg_www() %>"
 maintainer: "<%= FreeBSD.pkg_maintainer() %>"
 prefix: "<%= FreeBSD.pkg_prefix() %>"
 desc = <<EOD
-  This is a longer description of the package.
-  It is the equivalent of xthe pkg-descr file for a port.
-  It may be one to a few paragraphs.
-
-  It can span multiple lines.
-  It can also span multiple paragraphs.
+  <%= FreeBSD.pkg_description() %>
 EOD

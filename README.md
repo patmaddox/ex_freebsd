@@ -39,7 +39,8 @@ end
 
   defp freebsd do
     [
-      maintainer: "pat@patmaddox.com"
+      maintainer: "pat@patmaddox.com",
+      description: description() # can be a multi-line string instead
     ]
   end
 ```

@@ -65,6 +65,7 @@ defmodule FreeBSD.MixProject do
 
   defp freebsd do
     [
+      description: description(),
       maintainer: "pat@patmaddox.com"
     ]
   end
