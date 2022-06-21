@@ -8,7 +8,7 @@ defmodule Mix.Tasks.Freebsd.Gen.Pkg do
   def run(_) do
     Generator.create_directory("freebsd")
 
-    ["MANIFEST.eex", "rc.eex"]
+    ["MANIFEST.eex", "rc.eex", "rc_conf.eex"]
     |> Enum.each(
       &Generator.copy_file(
         Application.app_dir(:freebsd, "priv/templates/freebsd.gen.pkg/#{&1}"),

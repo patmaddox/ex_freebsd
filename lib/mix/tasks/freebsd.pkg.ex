@@ -53,12 +53,18 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   end
 
   defp rc() do
-    rc_dir = "#{install_dir()}/etc/rc.d"
+    etc_dir = "#{install_dir()}/etc"
+    rc_dir = "#{etc_dir}/rc.d"
     rc_file = "#{rc_dir}/#{FreeBSD.pkg_name()}"
     File.mkdir_p!(rc_dir)
-    result = EEx.eval_file("freebsd/rc.eex", assigns: %{pkg_name: FreeBSD.pkg_name()})
-    File.write!(rc_file, result)
+    rc_result = EEx.eval_file("freebsd/rc.eex", assigns: %{pkg_name: FreeBSD.pkg_name()})
+    File.write!(rc_file, rc_result)
     File.chmod!(rc_file, 0o755)
+
+    conf_file = "#{etc_dir}/#{FreeBSD.pkg_name()}.conf"
+    conf_result = EEx.eval_file("freebsd/rc_conf.eex", assigns: %{pkg_name: FreeBSD.pkg_name()})
+    File.write!(conf_file, conf_result)
+    File.chmod!(conf_file, 0o640)
   end
 
   defp prep_tmp() do
