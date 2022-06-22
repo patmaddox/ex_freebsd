@@ -16,12 +16,21 @@ extra_commands="pid remote eval rpc"
 
 start_cmd="${command} daemon"
 stop_cmd="${command} stop"
-restart_cmd="${command} restart"
+restart_cmd=<%= @pkg_name %>_restart
 pid_cmd="${command} pid"
 status_cmd=<%= @pkg_name %>_status
 remote_cmd=<%= @pkg_name %>_remote
 eval_cmd=<%= @pkg_name %>_eval
 rpc_cmd=<%= @pkg_name %>_rpc
+
+<%= @pkg_name %>_restart()
+{
+  if $pid_cmd > /dev/null 2>&1; then
+    $command restart
+  else
+    $start_cmd
+  fi
+}
 
 _check_running()
 {
