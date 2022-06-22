@@ -16,43 +16,52 @@ extra_commands="pid remote eval rpc"
 
 start_cmd="${command} daemon"
 stop_cmd="${command} stop"
-restart_cmd="${command} restart"
+restart_cmd=<%= @pkg_name %>_restart
 pid_cmd="${command} pid"
 status_cmd=<%= @pkg_name %>_status
 remote_cmd=<%= @pkg_name %>_remote
 eval_cmd=<%= @pkg_name %>_eval
 rpc_cmd=<%= @pkg_name %>_rpc
 
+<%= @pkg_name %>_restart()
+{
+  if $pid_cmd > /dev/null 2>&1; then
+    $command restart
+  else
+    $start_cmd
+  fi
+}
+
 _check_running()
 {
-    if ! $pid_cmd > /dev/null 2>&1; then
-	echo "<%= @pkg_name %> is not running."
-	exit 1
-    fi
+  if ! $pid_cmd > /dev/null 2>&1; then
+    echo "<%= @pkg_name %> is not running."
+    exit 1
+  fi
 }
 
 <%= @pkg_name %>_status()
 {
-    _check_running
-    echo "<%= @pkg_name %> is running."
+  _check_running
+  echo "<%= @pkg_name %> is running."
 }
 
 <%= @pkg_name %>_remote()
 {
-    _check_running
-    export TERM=xterm
-    $command remote
+  _check_running
+  export TERM=xterm
+  $command remote
 }
 
 <%= @pkg_name %>_eval()
 {
-    $command eval "$1"
+  $command eval "$1"
 }
 
 <%= @pkg_name %>_rpc()
 {
-    _check_running
-    $command rpc "$1"
+  _check_running
+  $command rpc "$1"
 }
 
 load_rc_config $name
