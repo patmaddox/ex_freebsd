@@ -2,12 +2,13 @@ freebsd_instance:
   image_family: freebsd-13-1
 
 build_task:
+  env:
+    PATH: /usr/local/lib/erlang25/bin:$PATH
   upgrade_packages_script:
     - mkdir -p /usr/local/etc/pkg/repos/
     - cat /etc/pkg/FreeBSD.conf | sed -e 's/quarterly/latest/' > /usr/local/etc/pkg/repos/FreeBSD.conf
-    - pkg upgrade -y
   install_elixir_script:
-    - pkg install -y elixir
+    - pkg install -y erlang-runtime25 elixir-devel
     - mix local.hex --force
     - mix local.rebar --force
   test_script:
