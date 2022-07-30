@@ -1,11 +1,10 @@
 #!/bin/sh
 set -e
 
-rm -f freebsd/freebsd-*.pkg
+rm -f freebsd-*.pkg
 mix deps.get
-mix freebsd.gen.pkg
-echo "y" | mix freebsd.pkg
-pkg install -y freebsd/freebsd-*.pkg
+mix freebsd.pkg
+pkg install -y freebsd-*.pkg
 
 echo "Enabling service..."
 service freebsd enable
@@ -33,14 +32,14 @@ then
     exit 1
 fi
 
-echo "Running rpc command..."
-result=$(service freebsd rpc "IO.write\(1+1\)") # have to escape () ?  ugh...
-
-if [ $result != "2" ]
-then
-  echo "rpc result should return 2; Got $result instead"
-  exit 1
-fi
+#echo "Running rpc command..."
+#result=$(service freebsd rpc "IO.write\(1+1\)") # have to escape () ?  ugh...
+#
+#if [ $result != "2" ]
+#then
+#  echo "rpc result should return 2; Got $result instead"
+#  exit 1
+#fi
 
 echo "Stopping service..."
 service freebsd stop
