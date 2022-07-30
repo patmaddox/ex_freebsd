@@ -6,7 +6,9 @@ Documentation: <https://hexdocs.pm/freebsd>
 
 ## Installation
 
-You DO need `elixir` to build your release and package. You can install it with `pkg install elixir`.
+You DO need `elixir` to build your release and package.
+You can install it with `pkg install elixir`.
+(See **Choosing an OTP Version** below).
 
 You DO NOT need `elixir` to run your app, assuming your mix release configures `include_erts: true` (which is the default).
 
@@ -67,6 +69,24 @@ AWS_ACCESS_KEY_ID=abc123def456
 ```
 
 Logs and crash dumps default to `/var/run/<appname>`.
+
+## Choosing an OTP Version
+
+The simplest way to install and build with elixir is to `pkg install elixir`.
+This will use the most recently built [`lang/elixir`](https://www.freshports.org/lang/elixir/)
+and [`lang/erlang`](https://www.freshports.org/lang/erlang/) ports.
+
+If you want to use a more recent version of elixir, and specify your erlang/OTP version,
+you should install [`lang/elixir-devel`](https://www.freshports.org/lang/elixir-devel/) and
+ the [`elixir-runtime*`](https://www.freshports.org/search.php?query=erlang-runtime&search=go&num=10&stype=name&method=match&deleted=excludedeleted&start=1&casesensitivity=caseinsensitive)
+ you want.
+
+The key difference between `lang/erlang` and `lang/erlang-runtime*` is that `lang/erlang` installs the erlang tools
+to `/usr/local/bin`, and `lang/erlang-runtime*` do not. This means that you will explicitly need to add the package's
+bin path to your PATH to use the tools, e.g. `export PATH=/usr/local/lib/erlang25/bin:$PATH`.
+
+See `.cirrus.yml` for an example of how to install and configure a specific erlang runtime.
+(Note that PATH is set using Cirrus CI's [env var syntax](https://cirrus-ci.org/guide/writing-tasks/#environment-variables).
 
 ## Roadmap
 
