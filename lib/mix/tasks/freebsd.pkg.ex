@@ -35,7 +35,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   end
 
   defp manifest() do
-    result = EEx.eval_file("freebsd/MANIFEST.eex")
+    result = template_file("MANIFEST.eex") |> EEx.eval_file()
     File.write!(manifest_file(), result)
   end
 
@@ -48,7 +48,8 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     File.mkdir_p!(rc_dir)
 
     rc_result =
-      EEx.eval_file("freebsd/rc.eex",
+      template_file("rc.eex")
+      |> EEx.eval_file(
         assigns: %{pkg_name: FreeBSD.pkg_name(), bin_path: bin_path(), beam_path: beam_path()}
       )
 
@@ -56,7 +57,10 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     File.chmod!(rc_file, 0o755)
 
     conf_file = "#{etc_dir}/#{FreeBSD.pkg_name()}.conf.sample"
-    conf_result = EEx.eval_file("freebsd/rc_conf.eex", assigns: %{pkg_name: FreeBSD.pkg_name()})
+
+    conf_result =
+      template_file("rc_conf.eex") |> EEx.eval_file(assigns: %{pkg_name: FreeBSD.pkg_name()})
+
     File.write!(conf_file, conf_result)
     File.chmod!(conf_file, 0o640)
   end
@@ -92,7 +96,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
   defp rel_dir(), do: "#{build_dir()}/rel/#{FreeBSD.pkg_name()}"
 
-  defp pkg_file(), do: "freebsd/#{FreeBSD.pkg_name()}-#{FreeBSD.pkg_version()}.pkg"
+  defp pkg_file(), do: "#{FreeBSD.pkg_name()}-#{FreeBSD.pkg_version()}.pkg"
 
   defp bin_path(),
     do: rel_files() |> Enum.find(&String.ends_with?(&1, "/bin/#{FreeBSD.pkg_name()}"))
@@ -105,4 +109,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     |> Stream.filter(&Enum.member?([:regular, :symlink], File.lstat!(&1).type))
     |> Stream.map(&String.replace(&1, "#{stage_dir()}#{FreeBSD.pkg_prefix()}/", ""))
   end
+
+  defp template_file(file),
+    do: Application.app_dir(:freebsd, "priv/templates/freebsd.gen.pkg/#{file}")
 end
