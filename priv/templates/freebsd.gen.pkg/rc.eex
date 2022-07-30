@@ -13,10 +13,10 @@ procname="<%= FreeBSD.pkg_prefix() %>/<%= @beam_path %>"
 : ${<%= @pkg_name %>_env_file:=<%= FreeBSD.pkg_prefix() %>/etc/<%= @pkg_name %>.conf}
 
 command="<%= FreeBSD.pkg_prefix() %>/<%= @bin_path %>"
-extra_commands="remote rpc"
+extra_commands="remote"
 start_cmd="daemon -f -t $name -p $pidfile $command start"
 remote_cmd=<%= @pkg_name %>_remote
-rpc_cmd=<%= @pkg_name %>_rpc
+#rpc_cmd=<%= @pkg_name %>_rpc
 
 <%= @pkg_name %>_remote()
 {
@@ -24,11 +24,10 @@ rpc_cmd=<%= @pkg_name %>_rpc
   $command remote
 }
 
-<%= @pkg_name %>_rpc()
-{
-  _check_running
-  $command rpc "$1"
-}
+#<%= @pkg_name %>_rpc()
+#{
+#  $command rpc "$1"
+#}
 
 load_rc_config $name
 run_rc_command "$@"
