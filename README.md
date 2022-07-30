@@ -20,9 +20,7 @@ def deps do
 end
 ```
 
-1. `mix freebsd.gen.pkg`
-2. Edit `freebsd/*.eex` as desired (particularly desc in `freebsd/MANIFEST.eex`
-3. Add a `freebsd` key to `mix.exs` project config.
+Add a `freebsd` key to `mix.exs` project config.
 
 ```elixir
   def project do
@@ -49,9 +47,9 @@ end
 
 Build a release as usual: `env MIX_ENV=prod mix release --overwrite`
 
-`env MIX_ENV=prod mix freebsd.pkg` will produce a FreeBSD .pkg file under freebsd/ which you can then install as usual.
+`env MIX_ENV=prod mix freebsd.pkg` will produce a FreeBSD .pkg file which you can then install as usual.
 
-`freebsd/rc.eex` produces `/usr/local/etc/rc.d/<appname>` which provides the following commands:
+`ExFreeBSD` produces `/usr/local/etc/rc.d/<appname>` which provides the following commands:
 
 - `start`
 - `stop`

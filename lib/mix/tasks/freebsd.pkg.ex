@@ -111,5 +111,5 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   end
 
   defp template_file(file),
-    do: Application.app_dir(:freebsd, "priv/templates/freebsd.gen.pkg/#{file}")
+    do: Application.app_dir(:freebsd, "priv/templates/freebsd.pkg/#{file}")
 end
