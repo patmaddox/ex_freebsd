@@ -47,6 +47,8 @@ end
 
 ## Usage
 
+Build a release as usual: `env MIX_ENV=prod mix release --overwrite`
+
 `env MIX_ENV=prod mix freebsd.pkg` will produce a FreeBSD .pkg file under freebsd/ which you can then install as usual.
 
 `freebsd/rc.eex` produces `/usr/local/etc/rc.d/<appname>` which provides the following commands:

@@ -1,6 +1,5 @@
 defmodule Mix.Tasks.Freebsd.Pkg do
   @moduledoc "Generate FreeBSD package from mix release"
-  @requirements ["release"]
 
   use Mix.Task
 
