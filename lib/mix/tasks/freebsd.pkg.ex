@@ -19,17 +19,16 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   end
 
   defp pkg() do
-    System.cmd("pkg", [
-      "create",
-      "-M",
-      manifest_file(),
-      "-r",
-      stage_dir(),
-      "-p",
-      "#{tmp_dir()}/pkg-plist",
-      "-o",
-      "freebsd"
-    ])
+    {_, 0} =
+      System.cmd("pkg", [
+        "create",
+        "-M",
+        manifest_file(),
+        "-r",
+        stage_dir(),
+        "-p",
+        "#{tmp_dir()}/pkg-plist"
+      ])
 
     IO.puts("Wrote #{pkg_file()}")
   end
