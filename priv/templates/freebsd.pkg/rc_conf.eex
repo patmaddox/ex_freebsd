@@ -1,7 +1,0 @@
-# General erlang / elixir config. You shouldn't need to modify this.
-RELEASE_TMP=/var/run/<%= @pkg_name %>
-ERL_CRASH_DUMP=${RELEASE_TMP}/log/erl_crash.dump
-
-# App config. Modify this as needed.
-
-# DATABASE_URL=ecto://user:password@host/db

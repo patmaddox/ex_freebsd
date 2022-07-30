@@ -10,7 +10,7 @@ rcvar=${name}_enable
 pidfile="/var/run/${name}.pid"
 procname="<%= FreeBSD.pkg_prefix() %>/<%= @beam_path %>"
 
-: ${<%= @pkg_name %>_env_file:=<%= FreeBSD.pkg_prefix() %>/etc/<%= @pkg_name %>.conf}
+: ${<%= @pkg_name %>_env_file:=<%= FreeBSD.pkg_prefix() %>/etc/<%= @pkg_name %>.env}
 
 command="<%= FreeBSD.pkg_prefix() %>/<%= @bin_path %>"
 extra_commands="remote"

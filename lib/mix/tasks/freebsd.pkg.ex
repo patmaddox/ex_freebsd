@@ -55,14 +55,6 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
     File.write!(rc_file, rc_result)
     File.chmod!(rc_file, 0o755)
-
-    conf_file = "#{etc_dir}/#{FreeBSD.pkg_name()}.conf.sample"
-
-    conf_result =
-      template_file("rc_conf.eex") |> EEx.eval_file(assigns: %{pkg_name: FreeBSD.pkg_name()})
-
-    File.write!(conf_file, conf_result)
-    File.chmod!(conf_file, 0o640)
   end
 
   defp prep_tmp() do
