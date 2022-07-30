@@ -16,7 +16,6 @@ command="<%= FreeBSD.pkg_prefix() %>/<%= @bin_path %>"
 extra_commands="remote"
 start_cmd=<%= @pkg_name %>_start
 remote_cmd=<%= @pkg_name %>_remote
-#rpc_cmd=<%= @pkg_name %>_rpc
 
 <%= @pkg_name %>_start()
 {
@@ -32,11 +31,6 @@ remote_cmd=<%= @pkg_name %>_remote
   export TERM=xterm
   $command remote
 }
-
-#<%= @pkg_name %>_rpc()
-#{
-#  $command rpc "$1"
-#}
 
 load_rc_config $name
 run_rc_command "$@"
