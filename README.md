@@ -55,10 +55,7 @@ Build a release as usual: `env MIX_ENV=prod mix release --overwrite`
 - `stop`
 - `restart`
 - `status`
-- `pid`
 - `remote`
-- `eval`
-- `rpc`
 
 Run them using [`service(8)`](https://www.freebsd.org/cgi/man.cgi?service(8)).
 
