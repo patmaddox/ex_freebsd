@@ -14,9 +14,18 @@ procname="<%= FreeBSD.pkg_prefix() %>/<%= @beam_path %>"
 
 command="<%= FreeBSD.pkg_prefix() %>/<%= @bin_path %>"
 extra_commands="remote"
-start_cmd="daemon -f -t $name -p $pidfile $command start"
+start_cmd=<%= @pkg_name %>_start
 remote_cmd=<%= @pkg_name %>_remote
 #rpc_cmd=<%= @pkg_name %>_rpc
+
+<%= @pkg_name %>_start()
+{
+  : ${RELEASE_TMP:=/var/run/${name}}
+  export RELEASE_TMP
+  : ${ERL_CRASH_DUMP:=${RELEASE_TMP}/log/erl_crash.dump}
+  export ERL_CRASH_DUMP
+  daemon -f -t $name -p $pidfile $command start
+}
 
 <%= @pkg_name %>_remote()
 {

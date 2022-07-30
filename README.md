@@ -59,7 +59,14 @@ Build a release as usual: `env MIX_ENV=prod mix release --overwrite`
 
 Run them using [`service(8)`](https://www.freebsd.org/cgi/man.cgi?service(8)).
 
-After installing the package, you can define application-specific environment variables in `/usr/local/etc/<appname>.env`.
+After installing the package, you can define application-specific environment variables in `/usr/local/etc/<appname>.env`:
+
+```
+DATABASE_URL=ecto://user:password@host/db
+AWS_ACCESS_KEY_ID=abc123def456
+```
+
+Logs and crash dumps default to `/var/run/<appname>`.
 
 ## Roadmap
 
