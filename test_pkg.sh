@@ -3,6 +3,7 @@ set -e
 
 rm -f freebsd-*.pkg
 mix deps.get
+mix release
 mix freebsd.pkg
 pkg install -y freebsd-*.pkg
 

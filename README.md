@@ -75,3 +75,4 @@ Logs and crash dumps default to `/var/run/<appname>`.
 - MANIFEST conflict for `<app> <app>-ci-*`
 - run as non-privileged user
 - document epmd usage (run it as a service, not automatically by package)
+- build package as part of a release
