@@ -12,7 +12,6 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     stage()
 
     # FreeBSD stuff
-    bin_script()
     rc()
     plist()
 
@@ -42,15 +41,6 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
   defp manifest_file(), do: "#{tmp_dir()}/+MANIFEST"
 
-  defp bin_script() do
-    File.mkdir_p("#{install_dir()}/bin")
-
-    File.ln_s!(
-      "#{FreeBSD.pkg_prefix()}/libexec/#{FreeBSD.pkg_name()}/bin/#{FreeBSD.pkg_name()}",
-      "#{install_dir()}/bin/#{FreeBSD.pkg_name()}"
-    )
-  end
-
   defp rc() do
     etc_dir = "#{install_dir()}/etc"
     rc_dir = "#{etc_dir}/rc.d"
@@ -59,7 +49,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
     rc_result =
       EEx.eval_file("freebsd/rc.eex",
-        assigns: %{pkg_name: FreeBSD.pkg_name(), beam_path: beam_path()}
+        assigns: %{pkg_name: FreeBSD.pkg_name(), bin_path: bin_path(), beam_path: beam_path()}
       )
 
     File.write!(rc_file, rc_result)
@@ -103,6 +93,9 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   defp rel_dir(), do: "#{build_dir()}/rel/#{FreeBSD.pkg_name()}"
 
   defp pkg_file(), do: "freebsd/#{FreeBSD.pkg_name()}-#{FreeBSD.pkg_version()}.pkg"
+
+  defp bin_path(),
+    do: rel_files() |> Enum.find(&String.ends_with?(&1, "/bin/#{FreeBSD.pkg_name()}"))
 
   defp beam_path(), do: rel_files() |> Enum.find(&String.ends_with?(&1, "/bin/beam.smp"))
 
