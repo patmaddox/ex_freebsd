@@ -34,7 +34,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   end
 
   defp manifest() do
-    result = template_file("MANIFEST.eex") |> EEx.eval_file()
+    result = Jason.encode!(FreeBSD.pkg_manifest())
     File.write!(manifest_file(), result)
   end
 

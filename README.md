@@ -38,10 +38,16 @@ Add a `freebsd` key to `mix.exs` project config.
   end
 
   defp freebsd do
-    [
+    %{
+      # required
       maintainer: "pat@patmaddox.com",
-      description: description() # can be a multi-line string instead
-    ]
+      description: description(), # can be a multi-line string instead
+
+      # optional, documented at https://www.freebsd.org/cgi/man.cgi?pkg-create(8)
+      deps: %{
+        bash: %{version: "5.1", origin: "shells/bash"}
+      }
+    }
   end
 ```
 
@@ -90,7 +96,6 @@ See `.cirrus.yml` for an example of how to install and configure a specific erla
 
 ## Roadmap
 
-- list dependencies
 - auto-name package w/ CI suffix: `<app>-ci-<branch>-<version>p<timestamp>`
 - MANIFEST conflict for `<app> <app>-ci-*`
 - run as non-privileged user

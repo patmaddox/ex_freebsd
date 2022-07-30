@@ -27,7 +27,8 @@ defmodule FreeBSD.MixProject do
 
   defp deps do
     [
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:jason, "~> 1.3"}
     ]
   end
 
@@ -64,9 +65,13 @@ defmodule FreeBSD.MixProject do
   defp elixirc_paths(_), do: ["lib"]
 
   defp freebsd do
-    [
+    %{
       description: description(),
-      maintainer: "pat@patmaddox.com"
-    ]
+      maintainer: "pat@patmaddox.com",
+      deps: %{
+        # not really, it's just a small package to test
+        bash: %{version: "5.1", origin: "shells/bash"}
+      }
+    }
   end
 end

@@ -1,4 +1,12 @@
 #!/bin/sh
+
+set +e
+which bash
+result=$?
+if [ $result -ne 1 ]
+then
+    echo "bash should not be installed yet (it's a package dependency)"
+fi
 set -e
 
 rm -f freebsd-*.pkg
@@ -6,6 +14,15 @@ mix deps.get
 mix release
 mix freebsd.pkg
 pkg install -y freebsd-*.pkg
+
+set +e
+which bash
+result=$?
+if [ $result -ne 0 ]
+then
+    echo "bash should have been installed as a package dependency"
+fi
+set -e
 
 echo "Enabling service..."
 service freebsd enable
