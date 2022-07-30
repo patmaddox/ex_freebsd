@@ -8,7 +8,7 @@ Documentation: <https://hexdocs.pm/freebsd>
 
 You DO need `elixir` to build your release and package.
 You can install it with `pkg install elixir`.
-(See **Choosing an OTP Version** below).
+(See _Choosing an OTP Version_ below).
 
 You DO NOT need `elixir` to run your app, assuming your mix release configures `include_erts: true` (which is the default).
 
@@ -57,7 +57,7 @@ Build a release as usual: `env MIX_ENV=prod mix release --overwrite`
 
 `env MIX_ENV=prod mix freebsd.pkg` will produce a FreeBSD .pkg file which you can then install as usual.
 
-`ExFreeBSD` produces `/usr/local/etc/rc.d/<appname>` which provides the following commands:
+ExFreeBSD produces `/usr/local/etc/rc.d/<appname>` which provides the following commands:
 
 - `start`
 - `stop`
@@ -92,7 +92,7 @@ to `/usr/local/bin`, and `lang/erlang-runtime*` do not. This means that you will
 bin path to your PATH to use the tools, e.g. `export PATH=/usr/local/lib/erlang25/bin:$PATH`.
 
 See `.cirrus.yml` for an example of how to install and configure a specific erlang runtime.
-(Note that PATH is set using Cirrus CI's [env var syntax](https://cirrus-ci.org/guide/writing-tasks/#environment-variables).
+(Note that PATH is set using Cirrus CI's [env var syntax](https://cirrus-ci.org/guide/writing-tasks/#environment-variables).)
 
 ## Roadmap
 
