@@ -56,7 +56,12 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     rc_dir = "#{etc_dir}/rc.d"
     rc_file = "#{rc_dir}/#{FreeBSD.pkg_name()}"
     File.mkdir_p!(rc_dir)
-    rc_result = EEx.eval_file("freebsd/rc.eex", assigns: %{pkg_name: FreeBSD.pkg_name()})
+
+    rc_result =
+      EEx.eval_file("freebsd/rc.eex",
+        assigns: %{pkg_name: FreeBSD.pkg_name(), beam_path: beam_path()}
+      )
+
     File.write!(rc_file, rc_result)
     File.chmod!(rc_file, 0o755)
 
@@ -81,10 +86,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     plist_file = File.stream!("#{tmp_dir()}/pkg-plist")
 
     :ok =
-      "#{stage_dir()}/**/*"
-      |> Path.wildcard()
-      |> Stream.filter(&Enum.member?([:regular, :symlink], File.lstat!(&1).type))
-      |> Stream.map(&String.replace(&1, "#{stage_dir()}#{FreeBSD.pkg_prefix()}/", ""))
+      rel_files()
       |> Stream.map(&"#{&1}\n")
       |> Stream.into(plist_file)
       |> Stream.run()
@@ -101,4 +103,13 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   defp rel_dir(), do: "#{build_dir()}/rel/#{FreeBSD.pkg_name()}"
 
   defp pkg_file(), do: "freebsd/#{FreeBSD.pkg_name()}-#{FreeBSD.pkg_version()}.pkg"
+
+  defp beam_path(), do: rel_files() |> Enum.find(&String.ends_with?(&1, "/bin/beam.smp"))
+
+  defp rel_files do
+    "#{stage_dir()}/**/*"
+    |> Path.wildcard()
+    |> Stream.filter(&Enum.member?([:regular, :symlink], File.lstat!(&1).type))
+    |> Stream.map(&String.replace(&1, "#{stage_dir()}#{FreeBSD.pkg_prefix()}/", ""))
+  end
 end
