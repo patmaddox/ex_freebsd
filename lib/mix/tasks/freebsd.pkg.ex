@@ -43,13 +43,19 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   defp rc() do
     etc_dir = "#{install_dir()}/etc"
     rc_dir = "#{etc_dir}/rc.d"
-    rc_file = "#{rc_dir}/#{FreeBSD.pkg_name()}"
+    rc_file = "#{rc_dir}/#{pkg_name()}"
     File.mkdir_p!(rc_dir)
 
     rc_result =
       template_file("rc.eex")
       |> EEx.eval_file(
-        assigns: %{pkg_name: FreeBSD.pkg_name(), bin_path: bin_path(), beam_path: beam_path()}
+        assigns: %{
+          pkg_name: pkg_name(),
+          bin_path: bin_path(),
+          beam_path: beam_path(),
+          conf_dir: conf_dir(),
+          conf_dir_var: conf_dir_var()
+        }
       )
 
     File.write!(rc_file, rc_result)
@@ -62,7 +68,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   end
 
   defp stage() do
-    libexec_dir = "#{install_dir()}/libexec/#{FreeBSD.pkg_name()}"
+    libexec_dir = "#{install_dir()}/libexec/#{pkg_name()}"
     File.mkdir_p!(libexec_dir)
     File.cp_r!(rel_dir(), libexec_dir)
   end
@@ -85,12 +91,12 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
   defp build_dir(), do: "_build/#{Mix.env()}"
 
-  defp rel_dir(), do: "#{build_dir()}/rel/#{FreeBSD.pkg_name()}"
+  defp rel_dir(), do: "#{build_dir()}/rel/#{pkg_name()}"
 
-  defp pkg_file(), do: "#{FreeBSD.pkg_name()}-#{FreeBSD.pkg_version()}.pkg"
+  defp pkg_file(), do: "#{pkg_name()}-#{FreeBSD.pkg_version()}.pkg"
 
   defp bin_path(),
-    do: rel_files() |> Enum.find(&String.ends_with?(&1, "/bin/#{FreeBSD.pkg_name()}"))
+    do: rel_files() |> Enum.find(&String.ends_with?(&1, "/bin/#{pkg_name()}"))
 
   defp beam_path(), do: rel_files() |> Enum.find(&String.ends_with?(&1, "/bin/beam.smp"))
 
@@ -103,4 +109,10 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
   defp template_file(file),
     do: Application.app_dir(:freebsd, "priv/templates/freebsd.pkg/#{file}")
+
+  defp pkg_name, do: FreeBSD.pkg_name() |> to_string()
+
+  defp conf_dir, do: [FreeBSD.pkg_prefix(), "etc", pkg_name <> ".d"] |> Enum.join("/")
+
+  defp conf_dir_var, do: pkg_name() |> String.upcase()
 end

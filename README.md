@@ -67,7 +67,7 @@ ExFreeBSD produces `/usr/local/etc/rc.d/<appname>` which provides the following 
 
 Run them using [`service(8)`](https://www.freebsd.org/cgi/man.cgi?service(8)).
 
-After installing the package, you can define application-specific environment variables in `/usr/local/etc/<appname>.env`:
+After installing the package, you can define application-specific environment variables in `/usr/local/etc/<appname>/<appname>.env`:
 
 ```
 DATABASE_URL=ecto://user:password@host/db

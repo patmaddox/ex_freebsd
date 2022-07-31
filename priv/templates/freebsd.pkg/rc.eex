@@ -9,8 +9,9 @@ name=<%= @pkg_name %>
 rcvar=${name}_enable
 pidfile="/var/run/${name}.pid"
 procname="<%= FreeBSD.pkg_prefix() %>/<%= @beam_path %>"
+confdir="<%= @conf_dir %>"
 
-: ${<%= @pkg_name %>_env_file:=<%= FreeBSD.pkg_prefix() %>/etc/<%= @pkg_name %>.env}
+: ${<%= @pkg_name %>_env_file:=<%= @conf_dir %>/<%= @pkg_name %>.env}
 
 command="<%= FreeBSD.pkg_prefix() %>/<%= @bin_path %>"
 extra_commands="remote"
@@ -19,6 +20,8 @@ remote_cmd=<%= @pkg_name %>_remote
 
 <%= @pkg_name %>_start()
 {
+  : ${<%= @conf_dir_var %>_CONF_DIR:=$confdir}
+  export <%= @conf_dir_var %>_CONF_DIR
   : ${RELEASE_TMP:=/var/run/${name}}
   export RELEASE_TMP
   : ${ERL_CRASH_DUMP:=${RELEASE_TMP}/log/erl_crash.dump}
