@@ -74,7 +74,8 @@ DATABASE_URL=ecto://user:password@host/db
 AWS_ACCESS_KEY_ID=abc123def456
 ```
 
-Logs and crash dumps default to `/var/run/<appname>`.
+Logs go to `/var/log/<appname>.log`. Crash dumps default to `/var/log/<appname>_erl_crash.dump`.
+Any additional temp app data defaults to `/var/run/<appname>`.
 
 ## Choosing an OTP Version
 
