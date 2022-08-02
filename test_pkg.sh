@@ -38,6 +38,16 @@ then
     exit 1
 fi
 
+set +e
+ls /var/log/freebsd.log
+result=$?
+set -e
+if [ $result -ne 1 ]
+then
+    echo "Log file should not exist yet"
+    exit 1
+fi
+
 echo "Starting service..."
 service freebsd start
 sleep 1
@@ -47,6 +57,16 @@ result=$?
 if [ $result -ne 0 ]
 then
     echo "Status should exit 0 when running; Got $result instead"
+    exit 1
+fi
+
+set +e
+ls /var/log/freebsd.log
+result=$?
+set -e
+if [ $result -ne 0 ]
+then
+    echo "Log file should exist"
     exit 1
 fi
 
