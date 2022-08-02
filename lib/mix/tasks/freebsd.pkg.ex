@@ -112,7 +112,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
   defp pkg_name, do: FreeBSD.pkg_name() |> to_string()
 
-  defp conf_dir, do: [FreeBSD.pkg_prefix(), "etc", pkg_name <> ".d"] |> Enum.join("/")
+  defp conf_dir, do: [FreeBSD.pkg_prefix(), "etc", pkg_name() <> ".d"] |> Enum.join("/")
 
   defp conf_dir_var, do: pkg_name() |> String.upcase()
 end
