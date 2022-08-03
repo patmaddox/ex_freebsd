@@ -9,11 +9,15 @@ then
 fi
 set -e
 
-rm -f freebsd-*.pkg
+echo "# Testing basic package"
+cd test/support/basic >/dev/null
+
+rm -f freebsd_basic-*.pkg
+mix local.hex --if-missing --force
 mix deps.get
-mix release
+mix release --overwrite
 mix freebsd.pkg
-pkg install -y freebsd-*.pkg
+pkg install -y freebsd_basic-*.pkg
 
 set +e
 which bash
@@ -24,12 +28,12 @@ then
 fi
 set -e
 
-echo "Enabling service..."
-service freebsd enable
+echo "## Enabling service..."
+service freebsd_basic enable
 
-echo "Checking status..."
+echo "## Checking status..."
 set +e
-service freebsd status
+service freebsd_basic status
 result=$?
 set -e
 if [ $result -ne 1 ]
@@ -39,7 +43,7 @@ then
 fi
 
 set +e
-ls /var/log/freebsd.log
+ls /var/log/freebsd_basic.log
 result=$?
 set -e
 if [ $result -ne 1 ]
@@ -48,11 +52,11 @@ then
     exit 1
 fi
 
-echo "Starting service..."
-service freebsd start
+echo "## Starting service..."
+service freebsd_basic start
 sleep 1
-echo "Checking status..."
-service freebsd status
+echo "## Checking status..."
+service freebsd_basic status
 result=$?
 if [ $result -ne 0 ]
 then
@@ -61,7 +65,20 @@ then
 fi
 
 set +e
-ls /var/log/freebsd.log
+echo "## Checking that user is root"
+app_pid=`cat /var/run/freebsd_basic.pid`
+ps -p "${app_pid}" -o user | grep root
+set -e
+result=$?
+if [ $result -ne 0 ]
+then
+    echo "Process hsould be running as root"
+    exit 1
+fi
+
+
+set +e
+ls /var/log/freebsd_basic.log
 result=$?
 set -e
 if [ $result -ne 0 ]
@@ -70,12 +87,12 @@ then
     exit 1
 fi
 
-echo "Stopping service..."
-service freebsd stop
+echo "## Stopping service..."
+service freebsd_basic stop
 sleep 1
-echo "Checking status..."
+echo "## Checking status..."
 set +e
-service freebsd status
+service freebsd_basic status
 result=$?
 set -e
 if [ $result -ne 1 ]
@@ -84,16 +101,66 @@ then
     exit 1
 fi
 
-echo "Retarting service..."
-service freebsd restart
+echo "## Restarting service..."
+service freebsd_basic restart
 sleep 1
-echo "Checking status..."
-service freebsd status
+echo "## Checking status..."
+service freebsd_basic status
 result=$?
 if [ $result -ne 0 ]
 then
     echo "Status should exit 0 when running; Got $result instead"
     exit 1
 fi
+
+service freebsd_basic stop
+
+cd -
+
+echo
+echo "# Testing user package"
+cd test/support/user >/dev/null
+
+echo "## Creating appuser user account"
+pw adduser -d /usr/local/libexec/freebsd_user -n appuser
+
+rm -f freebsd_user-*.pkg
+mix local.hex --if-missing --force
+mix deps.get
+mix release --overwrite
+mix freebsd.pkg
+pkg install -y freebsd_user-*.pkg
+
+echo "## Enabling service..."
+service freebsd_user enable
+
+echo "## Starting service..."
+service freebsd_user start
+sleep 1
+
+echo "## Checking service status..."
+service freebsd_user status
+result=$?
+if [ $result -ne 0 ]
+then
+    echo "Status should exit 0 when running; Got $result instead"
+    exit 1
+fi
+
+set +e
+echo "## Checking that user is not root"
+app_pid=`cat /var/run/freebsd_user.pid`
+ps -p "${app_pid}" -o user | grep appuser
+set -e
+result=$?
+if [ $result -ne 0 ]
+then
+    echo "Process should be running as appuser"
+    exit 1
+fi
+
+service freebsd_user stop
+
+cd -
 
 echo "All systems go!"

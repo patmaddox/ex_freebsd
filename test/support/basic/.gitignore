@@ -1,0 +1,10 @@
+*.ez
+/.fetch
+/_build/
+/cover/
+/deps/
+/doc/
+/tmp/
+erl_crash.dump
+freebsd_basic-*.pkg
+freebsd_basic-*.tar
