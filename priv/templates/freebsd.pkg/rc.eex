@@ -28,7 +28,7 @@ remote_cmd=<%= @pkg_name %>_remote
   export RELEASE_TMP
   : ${ERL_CRASH_DUMP:=${logdir}/${name}_erl_crash.dump}
   export ERL_CRASH_DUMP
-  daemon -t $name -p $pidfile -f -H -o $logfile $command start
+  daemon -t $name -p $pidfile -f -H -o $logfile <%= @daemon_flags %> $command start
 }
 
 <%= @pkg_name %>_remote()

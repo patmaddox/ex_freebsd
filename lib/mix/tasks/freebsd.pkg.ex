@@ -5,6 +5,8 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
   @shortdoc "Generates FreeBSD pkg files"
   def run(_) do
+    config = Mix.Project.config() |> Keyword.get(:freebsd, [])
+
     prep_tmp()
 
     # elixir stuff
@@ -12,7 +14,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     stage()
 
     # FreeBSD stuff
-    rc()
+    rc(config)
     plist()
 
     pkg()
@@ -40,7 +42,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
   defp manifest_file(), do: "#{tmp_dir()}/+MANIFEST"
 
-  defp rc() do
+  defp rc(config) do
     etc_dir = "#{install_dir()}/etc"
     rc_dir = "#{etc_dir}/rc.d"
     rc_file = "#{rc_dir}/#{pkg_name()}"
@@ -54,12 +56,19 @@ defmodule Mix.Tasks.Freebsd.Pkg do
           bin_path: bin_path(),
           beam_path: beam_path(),
           conf_dir: conf_dir(),
-          conf_dir_var: conf_dir_var()
+          conf_dir_var: conf_dir_var(),
+          daemon_flags: daemon_flags(config)
         }
       )
 
     File.write!(rc_file, rc_result)
     File.chmod!(rc_file, 0o755)
+  end
+
+  defp daemon_flags(config) do
+    flags = []
+    flags = if config[:user], do: ["-u #{config[:user]}"], else: flags
+    Enum.join(flags, " ")
   end
 
   defp prep_tmp() do
