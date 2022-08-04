@@ -16,6 +16,8 @@ defmodule FreeBSD do
       desc: pkg_description()
     }
     |> with_deps(pkg_deps())
+    |> with_user(freebsd_config(:user))
+    |> with_scripts(freebsd_config(:user))
   end
 
   def pkg_name, do: Mix.Project.config() |> Keyword.fetch!(:app)
@@ -36,6 +38,78 @@ defmodule FreeBSD do
 
   defp freebsd_config, do: Mix.Project.config() |> Keyword.fetch!(:freebsd)
 
+  defp freebsd_config(key),
+    do: Mix.Project.config() |> Keyword.fetch!(:freebsd) |> Map.get(key)
+
   defp with_deps(manifest, nil), do: manifest
   defp with_deps(manifest, deps), do: Map.put(manifest, :deps, deps)
+
+  defp with_user(manifest, nil), do: manifest
+  defp with_user(manifest, username), do: Map.put(manifest, :users, [username])
+
+  def with_scripts(manifest, username) do
+    manifest
+    |> Map.put(:scripts, %{
+      "pre-install" =>
+        Enum.join(
+          [
+            create_user_script(username),
+            create_config_dir_script()
+          ],
+          "\n"
+        )
+    })
+  end
+
+  defp create_user_script(nil), do: ""
+
+  defp create_user_script(username) do
+    pkg_name = pkg_name()
+
+    """
+    if [ -n "${PKG_ROOTDIR}" ] && [ "${PKG_ROOTDIR}" != "/" ]; then
+      PW="/usr/sbin/pw -R ${PKG_ROOTDIR}"
+    else
+      PW=/usr/sbin/pw
+    fi
+    echo "===> Creating groups."
+    if ! ${PW} groupshow #{username} >/dev/null 2>&1; then
+      echo "Creating group '#{username}'."
+      ${PW} groupadd #{username}
+    else
+      echo "Using existing group '#{username}'."
+    fi
+    echo "===> Creating user"
+    if ! ${PW} usershow #{username} >/dev/null 2>&1; then
+      echo "Creating user '#{username}'."
+      ${PW} useradd #{username} -g #{username} -c "#{pkg_name} user" -d /usr/local/libexec/#{pkg_name} -s /bin/sh
+    else
+      echo "Using existing user '#{username}'."
+    fi
+    """
+  end
+
+  defp create_config_dir_script() do
+    pkg_name = pkg_name()
+    config_dir = "/usr/local/etc/#{pkg_name}.d"
+    config_file = "/usr/local/etc/#{pkg_name}.d/#{pkg_name}.env"
+
+    """
+    echo "===> Creating config"
+    if [ ! -d "#{config_dir}" ]
+    then
+      mkdir -p #{config_dir}
+      chmod 0755 #{config_dir}
+    else
+      echo "Using existing config directory #{config_dir}"
+    fi
+
+    if [ ! -f "#{config_file}" ]
+    then
+      touch "#{config_file}"
+    else
+      echo "Using existing config file '#{config_file}'"
+    fi
+    """
+  end
 end

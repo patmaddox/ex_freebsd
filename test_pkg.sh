@@ -72,10 +72,9 @@ set -e
 result=$?
 if [ $result -ne 0 ]
 then
-    echo "Process hsould be running as root"
+    echo "Process should be running as root"
     exit 1
 fi
-
 
 set +e
 ls /var/log/freebsd_basic.log
@@ -117,12 +116,21 @@ service freebsd_basic stop
 
 cd -
 
+
 echo
 echo "# Testing user package"
 cd test/support/user >/dev/null
 
-echo "## Creating appuser user account"
-pw adduser -d /usr/local/libexec/freebsd_user -n appuser
+echo "## Checking pre-install user..."
+set +e
+id appuser >/dev/null
+result=$?
+set -e
+if [ $result -ne 1 ]
+then
+    echo "User should not exist before installing package"
+    exit 1
+fi
 
 rm -f freebsd_user-*.pkg
 mix local.hex --if-missing --force
@@ -130,6 +138,17 @@ mix deps.get
 mix release --overwrite
 mix freebsd.pkg
 pkg install -y freebsd_user-*.pkg
+
+echo "## Checking user..."
+set +e
+id appuser >/dev/null
+result=$?
+set -e
+if [ $result -ne 0 ]
+then
+    echo "User should exist after installing package"
+    exit 1
+fi
 
 echo "## Enabling service..."
 service freebsd_user enable
