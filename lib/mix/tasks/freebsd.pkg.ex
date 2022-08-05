@@ -5,7 +5,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
   @shortdoc "Generates FreeBSD pkg files"
   def run(_) do
-    config = Mix.Project.config() |> Keyword.get(:freebsd, [])
+    config = Mix.Project.config() |> Keyword.fetch!(:freebsd)
 
     prep_tmp()
 
