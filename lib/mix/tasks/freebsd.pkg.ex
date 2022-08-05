@@ -65,11 +65,8 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     File.chmod!(rc_file, 0o755)
   end
 
-  defp daemon_flags(config) do
-    flags = []
-    flags = if config[:user], do: ["-u #{config[:user]}"], else: flags
-    Enum.join(flags, " ")
-  end
+  defp daemon_flags(%{user: user}), do: "-u #{user}"
+  defp daemon_flags(_), do: nil
 
   defp prep_tmp() do
     File.rm_rf!(tmp_dir())
