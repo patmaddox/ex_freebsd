@@ -57,6 +57,13 @@ defmodule FreeBSD do
             create_config_dir_script()
           ],
           "\n"
+        ),
+      "post-deinstall" =>
+        Enum.join(
+          [
+            remove_user_script(username)
+          ],
+          "\n"
         )
     })
   end
@@ -109,6 +116,22 @@ defmodule FreeBSD do
       touch "#{config_file}"
     else
       echo "Using existing config file '#{config_file}'"
+    fi
+    """
+  end
+
+  defp remove_user_script(nil), do: ""
+
+  defp remove_user_script(username) do
+    """
+    if [ -n "${PKG_ROOTDIR}" ] && [ "${PKG_ROOTDIR}" != "/" ]; then
+      PW="/usr/sbin/pw -R ${PKG_ROOTDIR}"
+    else
+      PW=/usr/sbin/pw
+    fi
+    if ${PW} usershow #{username} >/dev/null 2>&1; then
+      echo "==> pkg user '#{username}' should be manually removed."
+      echo "  ${PW} userdel #{username}"
     fi
     """
   end
