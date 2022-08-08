@@ -53,8 +53,8 @@ defmodule FreeBSD do
       "pre-install" =>
         Enum.join(
           [
-            create_user_script(username),
-            create_config_dir_script()
+            create_config_dir_script(),
+            create_user_script(username)
           ],
           "\n"
         ),
