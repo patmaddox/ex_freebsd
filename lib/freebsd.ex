@@ -6,7 +6,7 @@ defmodule FreeBSD do
 
   def pkg_manifest do
     pkg_name = pkg_name()
-    user = freebsd_config(:user)
+    user = pkg_user()
 
     %{
       name: pkg_name,
@@ -18,8 +18,8 @@ defmodule FreeBSD do
       prefix: pkg_prefix(),
       desc: pkg_description(),
       scripts: %{
-        "post-install" => post_install_script(user),
-        "pre-deinstall" => pre_deinstall_script(user)
+        "post-install" => post_install_script(),
+        "pre-deinstall" => pre_deinstall_script()
       }
     }
     |> with_deps(pkg_deps())
@@ -51,10 +51,9 @@ defmodule FreeBSD do
 
   def env_file_name, do: "#{pkg_name()}.env"
 
-  defp freebsd_config, do: Mix.Project.config() |> Keyword.fetch!(:freebsd)
+  def pkg_user, do: freebsd_config() |> Map.get(:user)
 
-  defp freebsd_config(key),
-    do: Mix.Project.config() |> Keyword.fetch!(:freebsd) |> Map.get(key)
+  defp freebsd_config, do: Mix.Project.config() |> Keyword.fetch!(:freebsd)
 
   defp with_deps(manifest, nil), do: manifest
   defp with_deps(manifest, deps), do: Map.put(manifest, :deps, deps)
@@ -62,24 +61,24 @@ defmodule FreeBSD do
   defp with_user(manifest, nil), do: manifest
   defp with_user(manifest, username), do: Map.put(manifest, :users, [username])
 
-  defp post_install_script(username) do
+  defp post_install_script do
     template_file("post_install.sh.eex")
     |> EEx.eval_file(
       assigns: %{
         pkg_name: pkg_name(),
-        pkg_user: username,
+        pkg_user: pkg_user(),
         config_dir: conf_dir(),
         env_file_name: env_file_name()
       }
     )
   end
 
-  def pre_deinstall_script(username) do
+  def pre_deinstall_script do
     template_file("pre_deinstall.sh.eex")
     |> EEx.eval_file(
       assigns: %{
         config_dir: conf_dir(),
-        pkg_user: username
+        pkg_user: pkg_user()
       }
     )
   end

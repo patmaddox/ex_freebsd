@@ -57,7 +57,8 @@ defmodule Mix.Tasks.Freebsd.Pkg do
           beam_path: beam_path(),
           conf_dir: FreeBSD.conf_dir(),
           conf_dir_var: FreeBSD.conf_dir_var(),
-          daemon_flags: daemon_flags(config)
+          daemon_flags: daemon_flags(config),
+          pkg_user: FreeBSD.pkg_user()
         }
       )
 

@@ -28,6 +28,14 @@ remote_cmd=<%= @pkg_name %>_remote
   export RELEASE_TMP
   : ${ERL_CRASH_DUMP:=${logdir}/${name}_erl_crash.dump}
   export ERL_CRASH_DUMP
+
+  if [ ! -d "${RELEASE_TMP}" ]; then
+    mkdir $RELEASE_TMP
+    chmod 740 $RELEASE_TMP
+    <%= if @pkg_user do %>
+    chown <%= @pkg_user %>:<%= @pkg_user %> $RELEASE_TMP
+    <% end %>
+  fi
   daemon -t $name -p $pidfile -f -H -o $logfile <%= @daemon_flags %> $command start
 }
 
