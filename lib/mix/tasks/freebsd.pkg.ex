@@ -63,7 +63,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
       )
 
     File.write!(rc_file, rc_result)
-    File.chmod!(rc_file, 0o755)
+    File.chmod!(rc_file, 0o740)
   end
 
   defp daemon_flags(%{user: user}), do: "-u #{user}"
