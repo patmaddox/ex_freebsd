@@ -132,8 +132,8 @@ defmodule Mix.Tasks.Freebsd.Pkg do
       template_file("post_install.sh.eex")
       |> EEx.eval_file(
         assigns: %{
-          config_dir: "/usr/local/etc/#{pkg_name}.d",
-          config_file: "/usr/local/etc/#{pkg_name}.d/#{pkg_name}.env",
+          config_dir: "#{FreeBSD.pkg_prefix()}/etc/#{pkg_name}.d",
+          config_file: "#{FreeBSD.pkg_prefix()}/etc/#{pkg_name}.d/#{pkg_name}.env",
           libexec_dir: libexec_dir,
           pkg_name: pkg_name,
           pkg_user: config[:user]
@@ -152,8 +152,8 @@ defmodule Mix.Tasks.Freebsd.Pkg do
       template_file("pre_deinstall.sh.eex")
       |> EEx.eval_file(
         assigns: %{
-          config_dir: "/usr/local/etc/#{pkg_name}.d",
-          config_file: "/usr/local/etc/#{pkg_name}.d/#{pkg_name}.env",
+          config_dir: "#{FreeBSD.pkg_prefix()}/etc/#{pkg_name}.d",
+          config_file: "#{FreeBSD.pkg_prefix()}/etc/#{pkg_name}.d/#{pkg_name}.env",
           libexec_dir: libexec_dir,
           pkg_name: pkg_name,
           pkg_user: config[:user]

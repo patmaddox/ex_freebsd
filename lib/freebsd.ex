@@ -17,8 +17,8 @@ defmodule FreeBSD do
       prefix: pkg_prefix(),
       desc: pkg_description(),
       scripts: %{
-        "post-install" => "/usr/local/libexec/#{pkg_name}/bin/post-install",
-        "pre-deinstall" => "/usr/local/libexec/#{pkg_name}/bin/pre-deinstall"
+        "post-install" => "#{pkg_prefix()}/libexec/#{pkg_name}/bin/post-install",
+        "pre-deinstall" => "#{pkg_prefix()}/libexec/#{pkg_name}/bin/pre-deinstall"
       }
     }
     |> with_deps(pkg_deps())
