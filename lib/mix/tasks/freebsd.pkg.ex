@@ -11,7 +11,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
     # elixir stuff
     manifest()
-    stage()
+    stage(config)
 
     # FreeBSD stuff
     rc(config)
@@ -73,10 +73,13 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     File.mkdir_p!(tmp_dir())
   end
 
-  defp stage() do
+  defp stage(config) do
     libexec_dir = "#{install_dir()}/libexec/#{pkg_name()}"
     File.mkdir_p!(libexec_dir)
     File.cp_r!(rel_dir(), libexec_dir)
+
+    post_install_script(libexec_dir, config)
+    pre_deinstall_script(libexec_dir, config)
   end
 
   defp plist() do
@@ -121,4 +124,44 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   defp conf_dir, do: [FreeBSD.pkg_prefix(), "etc", pkg_name() <> ".d"] |> Enum.join("/")
 
   defp conf_dir_var, do: pkg_name() |> String.upcase()
+
+  defp post_install_script(libexec_dir, config) do
+    pkg_name = pkg_name()
+
+    script =
+      template_file("post_install.sh.eex")
+      |> EEx.eval_file(
+        assigns: %{
+          config_dir: "/usr/local/etc/#{pkg_name}.d",
+          config_file: "/usr/local/etc/#{pkg_name}.d/#{pkg_name}.env",
+          libexec_dir: libexec_dir,
+          pkg_name: pkg_name,
+          pkg_user: config[:user]
+        }
+      )
+
+    filename = Path.join(libexec_dir, "bin/post-install")
+    File.write!(filename, script)
+    File.chmod!(filename, 0o755)
+  end
+
+  defp pre_deinstall_script(libexec_dir, config) do
+    pkg_name = pkg_name()
+
+    script =
+      template_file("pre_deinstall.sh.eex")
+      |> EEx.eval_file(
+        assigns: %{
+          config_dir: "/usr/local/etc/#{pkg_name}.d",
+          config_file: "/usr/local/etc/#{pkg_name}.d/#{pkg_name}.env",
+          libexec_dir: libexec_dir,
+          pkg_name: pkg_name,
+          pkg_user: config[:user]
+        }
+      )
+
+    filename = Path.join(libexec_dir, "bin/pre-deinstall")
+    File.write!(filename, script)
+    File.chmod!(filename, 0o755)
+  end
 end

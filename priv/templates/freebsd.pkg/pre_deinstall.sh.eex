@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# GENERATED FILE! Do not modify.
+#
+# This script is run during `pkg remove`.
+#
+
+CONFIG_DIR="<%= @config_dir %>"
+CONFIG_FILE="<%= @config_file %>"
+LIBEXEC="<%= @libexec_dir %>"
+PKG_NAME="<%= @pkg_name %>"
+
+<%= if @pkg_user do %>
+PKG_USER="<%= @pkg_user %>"
+
+if [ -n "${PKG_ROOTDIR}" ] && [ "${PKG_ROOTDIR}" != "/" ]; then
+  PW="/usr/sbin/pw -R ${PKG_ROOTDIR}"
+else
+  PW=/usr/sbin/pw
+fi
+if ${PW} usershow ${PKG_USER} >/dev/null 2>&1; then
+  echo "==> pkg user '${PKG_USER}' should be manually removed."
+  echo "  ${PW} userdel ${PKG_USER}"
+fi
+<% end %>
+
+if [ -d "${CONFIG_DIR}" ]
+then
+  echo "==> config directory '${CONFIG_DIR}' should be manually removed."
+  echo "  rm -rf ${CONFIG_DIR}"
+fi
