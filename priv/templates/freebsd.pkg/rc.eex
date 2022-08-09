@@ -10,8 +10,7 @@ rcvar=${name}_enable
 pidfile="/var/run/${name}.pid"
 procname="<%= FreeBSD.pkg_prefix() %>/<%= @beam_path %>"
 confdir="<%= @conf_dir %>"
-logdir="/var/log"
-logfile="${logdir}/${name}.log"
+logfile="/var/log/${name}.log"
 
 : ${<%= @pkg_name %>_env_file:=<%= @conf_dir %>/<%= @pkg_name %>.env}
 
@@ -26,7 +25,7 @@ remote_cmd=<%= @pkg_name %>_remote
   export <%= @conf_dir_var %>_CONF_DIR
   : ${RELEASE_TMP:=/var/run/${name}}
   export RELEASE_TMP
-  : ${ERL_CRASH_DUMP:=${logdir}/${name}_erl_crash.dump}
+  : ${ERL_CRASH_DUMP:=${RELEASE_TMP}/${name}_erl_crash.dump}
   export ERL_CRASH_DUMP
 
   if [ ! -d "${RELEASE_TMP}" ]; then
