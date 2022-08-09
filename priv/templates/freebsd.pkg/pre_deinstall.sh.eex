@@ -1,14 +1,4 @@
-#!/bin/sh
-
-# GENERATED FILE! Do not modify.
-#
-# This script is run during `pkg remove`.
-#
-
 CONFIG_DIR="<%= @config_dir %>"
-CONFIG_FILE="<%= @config_file %>"
-LIBEXEC="<%= @libexec_dir %>"
-PKG_NAME="<%= @pkg_name %>"
 
 <%= if @pkg_user do %>
 PKG_USER="<%= @pkg_user %>"

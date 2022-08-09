@@ -11,7 +11,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
     # elixir stuff
     manifest()
-    stage(config)
+    stage()
 
     # FreeBSD stuff
     rc(config)
@@ -45,18 +45,18 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   defp rc(config) do
     etc_dir = "#{install_dir()}/etc"
     rc_dir = "#{etc_dir}/rc.d"
-    rc_file = "#{rc_dir}/#{pkg_name()}"
+    rc_file = "#{rc_dir}/#{FreeBSD.pkg_name()}"
     File.mkdir_p!(rc_dir)
 
     rc_result =
-      template_file("rc.eex")
+      FreeBSD.template_file("rc.eex")
       |> EEx.eval_file(
         assigns: %{
-          pkg_name: pkg_name(),
+          pkg_name: FreeBSD.pkg_name(),
           bin_path: bin_path(),
           beam_path: beam_path(),
-          conf_dir: conf_dir(),
-          conf_dir_var: conf_dir_var(),
+          conf_dir: FreeBSD.conf_dir(),
+          conf_dir_var: FreeBSD.conf_dir_var(),
           daemon_flags: daemon_flags(config)
         }
       )
@@ -73,13 +73,11 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     File.mkdir_p!(tmp_dir())
   end
 
-  defp stage(config) do
-    libexec_dir = "#{install_dir()}/libexec/#{pkg_name()}"
+  defp stage do
+    libexec_dir = "#{install_dir()}/libexec/#{FreeBSD.pkg_name()}"
     File.mkdir_p!(libexec_dir)
     File.cp_r!(rel_dir(), libexec_dir)
-
-    post_install_script(libexec_dir, config)
-    pre_deinstall_script(libexec_dir, config)
+    make_share_files()
   end
 
   defp plist() do
@@ -100,12 +98,12 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
   defp build_dir(), do: "_build/#{Mix.env()}"
 
-  defp rel_dir(), do: "#{build_dir()}/rel/#{pkg_name()}"
+  defp rel_dir(), do: "#{build_dir()}/rel/#{FreeBSD.pkg_name()}"
 
-  defp pkg_file(), do: "#{pkg_name()}-#{FreeBSD.pkg_version()}.pkg"
+  defp pkg_file(), do: "#{FreeBSD.pkg_name()}-#{FreeBSD.pkg_version()}.pkg"
 
   defp bin_path(),
-    do: rel_files() |> Enum.find(&String.ends_with?(&1, "/bin/#{pkg_name()}"))
+    do: rel_files() |> Enum.find(&String.ends_with?(&1, "/bin/#{FreeBSD.pkg_name()}"))
 
   defp beam_path(), do: rel_files() |> Enum.find(&String.ends_with?(&1, "/bin/beam.smp"))
 
@@ -116,52 +114,17 @@ defmodule Mix.Tasks.Freebsd.Pkg do
     |> Stream.map(&String.replace(&1, "#{stage_dir()}#{FreeBSD.pkg_prefix()}/", ""))
   end
 
-  defp template_file(file),
-    do: Application.app_dir(:freebsd, "priv/templates/freebsd.pkg/#{file}")
+  defp make_share_files do
+    share_dir = "#{install_dir()}/share/#{FreeBSD.pkg_name()}"
+    File.mkdir_p!(share_dir)
 
-  defp pkg_name, do: FreeBSD.pkg_name() |> to_string()
+    env_sample_contents = """
+    # Environment variables defined here will be available to your application.
+    # DATABASE_URL="ecto://username:password@host/database"
+    """
 
-  defp conf_dir, do: [FreeBSD.pkg_prefix(), "etc", pkg_name() <> ".d"] |> Enum.join("/")
-
-  defp conf_dir_var, do: pkg_name() |> String.upcase()
-
-  defp post_install_script(libexec_dir, config) do
-    pkg_name = pkg_name()
-
-    script =
-      template_file("post_install.sh.eex")
-      |> EEx.eval_file(
-        assigns: %{
-          config_dir: "#{FreeBSD.pkg_prefix()}/etc/#{pkg_name}.d",
-          config_file: "#{FreeBSD.pkg_prefix()}/etc/#{pkg_name}.d/#{pkg_name}.env",
-          libexec_dir: libexec_dir,
-          pkg_name: pkg_name,
-          pkg_user: config[:user]
-        }
-      )
-
-    filename = Path.join(libexec_dir, "bin/post-install")
-    File.write!(filename, script)
-    File.chmod!(filename, 0o755)
-  end
-
-  defp pre_deinstall_script(libexec_dir, config) do
-    pkg_name = pkg_name()
-
-    script =
-      template_file("pre_deinstall.sh.eex")
-      |> EEx.eval_file(
-        assigns: %{
-          config_dir: "#{FreeBSD.pkg_prefix()}/etc/#{pkg_name}.d",
-          config_file: "#{FreeBSD.pkg_prefix()}/etc/#{pkg_name}.d/#{pkg_name}.env",
-          libexec_dir: libexec_dir,
-          pkg_name: pkg_name,
-          pkg_user: config[:user]
-        }
-      )
-
-    filename = Path.join(libexec_dir, "bin/pre-deinstall")
-    File.write!(filename, script)
-    File.chmod!(filename, 0o755)
+    env_sample_file = "#{share_dir}/#{FreeBSD.env_file_name()}.sample"
+    File.write!(env_sample_file, env_sample_contents)
+    File.chmod!(env_sample_file, 0o644)
   end
 end
