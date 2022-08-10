@@ -63,7 +63,8 @@ defmodule Mix.Tasks.Freebsd.Pkg do
       )
 
     File.write!(rc_file, rc_result)
-    File.chmod!(rc_file, 0o740) # prevents non-root from running service (and thus can't remote)
+    # prevents non-root from running service (and thus can't remote)
+    File.chmod!(rc_file, 0o740)
   end
 
   defp daemon_flags(%{user: user}), do: "-u #{user}"
@@ -121,6 +122,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
     env_sample_contents = """
     # Environment variables defined here will be available to your application.
+    # RELEASE_COOKIE="generate with Base.url_encode64(:crypto.strong_rand_bytes(40))"
     # DATABASE_URL="ecto://username:password@host/database"
     """
 
