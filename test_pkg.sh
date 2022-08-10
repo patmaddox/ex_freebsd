@@ -1,13 +1,11 @@
 #!/bin/sh
+set -e
 
-set +e
-which bash
-result=$?
-if [ $result -ne 1 ]
+if [ -f /usr/local/bin/bash ]
 then
     echo "bash should not be installed yet (it's a package dependency)"
+    exit 1
 fi
-set -e
 
 echo "# Testing basic package"
 cd test/support/basic >/dev/null
@@ -19,14 +17,11 @@ mix release --overwrite
 mix freebsd.pkg
 pkg install -y freebsd_basic-*.pkg
 
-set +e
-which bash
-result=$?
-if [ $result -ne 0 ]
+if [ ! -f /usr/local/bin/bash ]
 then
     echo "bash should have been installed as a package dependency"
+    exit 1
 fi
-set -e
 
 echo "## Enabling service..."
 service freebsd_basic enable
@@ -42,11 +37,7 @@ then
     exit 1
 fi
 
-set +e
-ls /var/log/freebsd_basic.log
-result=$?
-set -e
-if [ $result -ne 1 ]
+if [ -f /var/log/freebsd_basic.log ]
 then
     echo "Log file should not exist yet"
     exit 1
@@ -76,11 +67,7 @@ then
     exit 1
 fi
 
-set +e
-ls /var/log/freebsd_basic.log
-result=$?
-set -e
-if [ $result -ne 0 ]
+if [ ! -f /var/log/freebsd_basic.log ]
 then
     echo "Log file should exist"
     exit 1
@@ -153,11 +140,7 @@ fi
 echo "## Enabling service..."
 service freebsd_user enable
 
-set +e
-ls /var/log/freebsd_user.log
-result=$?
-set -e
-if [ $result -ne 1 ]
+if [ -f /var/log/freebsd_user.log ]
 then
     echo "Log file should not exist yet"
     exit 1
@@ -188,11 +171,7 @@ then
     exit 1
 fi
 
-set +e
-ls /var/log/freebsd_user.log
-result=$?
-set -e
-if [ $result -ne 0 ]
+if [ ! -f /var/log/freebsd_user.log ]
 then
     echo "Log file should exist"
     exit 1
