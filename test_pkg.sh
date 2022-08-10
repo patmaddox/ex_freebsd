@@ -218,6 +218,29 @@ then
     exit 1
 fi
 
+set +e
+ls -l /var/log/freebsd_user.log | awk '{print $3}' | grep root
+result=$?
+set -e
+if [ $result -ne 0 ]; then
+    echo "freebsd_user.log should be owned by root"
+    exit
+fi
+
+if [ ! -d /var/run/freebsd_user ]; then
+    echo "/var/run/freebsd_user should exist"
+    exit 1
+fi
+
+set +e
+ls -ld /var/run/freebsd_user | awk '{print $3}' | grep appuser
+result=$?
+set -e
+if [ $result -ne 0 ]; then
+    echo "/var/run/freebsd_user should be owned by appuser"
+    exit
+fi
+
 service freebsd_user stop
 
 cd -
