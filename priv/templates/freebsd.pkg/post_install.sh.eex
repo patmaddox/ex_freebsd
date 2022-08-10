@@ -29,7 +29,7 @@ fi
 
 if [ ! -d "${CONFIG_DIR}" ]
 then
-  echo "===> Creating config in #{CONFIG_FILE}"
+  echo "===> Creating config in ${CONFIG_FILE}"
   mkdir -p ${CONFIG_DIR}
   chmod 0750 ${CONFIG_DIR}
 

@@ -31,7 +31,10 @@ defmodule Basic.MixProject do
   defp freebsd do
     %{
       maintainer: "admin@example.com",
-      description: "Basic freebsd package"
+      description: "Basic freebsd package",
+      deps: %{
+        bash: %{version: "5.1", origin: "shells/bash"}
+      }
     }
   end
 
