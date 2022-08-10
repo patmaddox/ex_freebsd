@@ -1,9 +1,17 @@
 #!/bin/sh
 set -e
 
+basic_env="/usr/local/etc/freebsd_basic.d/freebsd_basic.env"
+user_env="/usr/local/etc/freebsd_user.d/freebsd_user.env"
+
 if [ -f /usr/local/bin/bash ]
 then
     echo "bash should not be installed yet (it's a package dependency)"
+    exit 1
+fi
+
+if [ -f $basic_env ]; then
+    echo "${basic_env} should not exist yet"
     exit 1
 fi
 
@@ -20,6 +28,20 @@ pkg install -y freebsd_basic-*.pkg
 if [ ! -f /usr/local/bin/bash ]
 then
     echo "bash should have been installed as a package dependency"
+    exit 1
+fi
+
+if [ ! -f $basic_env ]; then
+    echo "${basic_env} should have been installed"
+    exit 1
+fi
+
+set +e
+ls -l $basic_env | awk '{print $3}' | grep root
+result=$?
+set -e
+if [ $result -ne 0 ]; then
+    echo "${basic_env} should be owned by root"
     exit 1
 fi
 
@@ -119,6 +141,11 @@ then
     exit 1
 fi
 
+if [ -f $user_env ]; then
+    echo "${user_env} should not exist yet"
+    exit 1
+fi
+
 rm -f freebsd_user-*.pkg
 mix local.hex --if-missing --force
 mix deps.get
@@ -135,6 +162,20 @@ if [ $result -ne 0 ]
 then
     echo "User should exist after installing package"
     exit 1
+fi
+
+if [ ! -f $user_env ]; then
+    echo "${user_env} should have been installed"
+    exit 1
+fi
+
+set +e
+ls -l $user_env | awk '{print $3}' | grep appuser
+result=$?
+set -e
+if [ $result -ne 0 ]; then
+    echo "${user_env} should be owned by appuser"
+    exit
 fi
 
 echo "## Enabling service..."
