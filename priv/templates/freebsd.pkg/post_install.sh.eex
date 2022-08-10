@@ -21,7 +21,7 @@ fi
 
 if ! ${PW} usershow ${PKG_USER} >/dev/null 2>&1; then
   echo "User: '${PKG_USER}'."
-  ${PW} useradd ${PKG_USER} -g ${PKG_USER} -c "${PKG_NAME} user" -d /nonexistent -s /bin/sh
+  ${PW} useradd ${PKG_USER} -g ${PKG_USER} -c "${PKG_NAME} user" -d /nonexistent -s /usr/sbin/nologin
 else
   echo "Using existing user: '${PKG_USER}'."
 fi
