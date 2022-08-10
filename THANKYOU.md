@@ -1,1 +1,4 @@
-- @sax: now the log files go where you would expect!
+- @sax
+  - now the log files go where you would expect!
+  - run as non-privileged user
+  - create user and config file on pkg install
