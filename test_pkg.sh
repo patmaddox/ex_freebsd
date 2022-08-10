@@ -68,8 +68,8 @@ set +e
 echo "## Checking that user is root"
 app_pid=`cat /var/run/freebsd_basic.pid`
 ps -p "${app_pid}" -o user | grep root
-set -e
 result=$?
+set -e
 if [ $result -ne 0 ]
 then
     echo "Process should be running as root"
@@ -180,8 +180,8 @@ set +e
 echo "## Checking that user is not root"
 app_pid=`cat /var/run/freebsd_user.pid`
 ps -p "${app_pid}" -o user | grep appuser
-set -e
 result=$?
+set -e
 if [ $result -ne 0 ]
 then
     echo "Process should be running as appuser"
