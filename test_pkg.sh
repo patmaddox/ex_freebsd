@@ -238,7 +238,8 @@ result=$?
 set -e
 if [ $result -ne 0 ]; then
     echo "/var/run/freebsd_user should be owned by appuser"
-    exit
+    ls -ld /var/run/freebsd_user
+    exit 1
 fi
 
 service freebsd_user stop
