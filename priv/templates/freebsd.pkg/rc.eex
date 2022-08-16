@@ -31,10 +31,11 @@ remote_cmd=<%= @pkg_name %>_remote
   if [ ! -d "${RELEASE_TMP}" ]; then
     mkdir $RELEASE_TMP
     chmod 740 $RELEASE_TMP
-    <%= if @pkg_user do %>
-    chown <%= @pkg_user %>:<%= @pkg_user %> $RELEASE_TMP
-    <% end %>
   fi
+  <%= if @pkg_user do %>
+  echo "Setting ${RELEASE_TMP} owned by <%= @pkg_user %>."
+  chown -R <%= @pkg_user %>:<%= @pkg_user %> $RELEASE_TMP
+  <% end %>
   daemon -t $name -p $pidfile -f -H -o $logfile <%= @daemon_flags %> $command start
 }
 
