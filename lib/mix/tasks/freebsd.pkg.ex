@@ -119,7 +119,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
   defp make_sample_file do
     conf_dir = stage_dir() <> FreeBSD.conf_dir()
     File.mkdir_p!(conf_dir)
-    File.chmod!(conf_dir, 0o750)
+    File.chmod!(conf_dir, 0o755)
 
     env_sample_contents = """
     # Environment variables defined here will be available to your application.
