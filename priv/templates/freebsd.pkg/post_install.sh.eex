@@ -27,16 +27,8 @@ else
 fi
 <% end %>
 
-if [ ! -d "${CONFIG_DIR}" ]
+if [ ! -f $CONFIG_FILE ]
 then
   echo "===> Creating config in ${CONFIG_FILE}"
-  mkdir -p ${CONFIG_DIR}
-  chmod 0750 ${CONFIG_DIR}
-
-  cp ${PKG_PREFIX}/share/${PKG_NAME}/<%= @env_file_name %>.sample $CONFIG_FILE
-  chmod 0660 $CONFIG_FILE
-
-  <%= if @pkg_user do %>
-  chown -R <%= @pkg_user %>:<%= @pkg_user %> $CONFIG_DIR
-  <% end %>
+  cp ${CONFIG_DIR}/<%= @env_file_name %>.sample $CONFIG_FILE
 fi
