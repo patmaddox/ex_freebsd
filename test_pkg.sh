@@ -170,12 +170,12 @@ if [ ! -f $user_env ]; then
 fi
 
 set +e
-ls -l $user_env | awk '{print $3}' | grep appuser
+ls -l $user_env | awk '{print $3}' | grep root
 result=$?
 set -e
 if [ $result -ne 0 ]; then
-    echo "${user_env} should be owned by appuser"
-    exit
+    echo "${user_env} should be owned by root"
+    exit 1
 fi
 
 echo "## Enabling service..."
@@ -224,7 +224,7 @@ result=$?
 set -e
 if [ $result -ne 0 ]; then
     echo "freebsd_user.log should be owned by root"
-    exit
+    exit 1
 fi
 
 if [ ! -d /var/run/freebsd_user ]; then
