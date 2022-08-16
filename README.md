@@ -42,6 +42,7 @@ Add a `freebsd` key to `mix.exs` project config.
       # required
       maintainer: "pat@patmaddox.com",
       description: description(), # can be a multi-line string instead
+      user: "service-username", # optional - user will be created automatically
 
       # optional, documented at https://www.freebsd.org/cgi/man.cgi?pkg-create(8)
       deps: %{
