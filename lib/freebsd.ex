@@ -78,7 +78,8 @@ defmodule FreeBSD do
     |> EEx.eval_file(
       assigns: %{
         config_dir: conf_dir(),
-        pkg_user: pkg_user()
+        pkg_user: pkg_user(),
+        var_dir: "/var/run/#{pkg_name()}"
       }
     )
   end
