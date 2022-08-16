@@ -64,7 +64,7 @@ defmodule Mix.Tasks.Freebsd.Pkg do
 
     File.write!(rc_file, rc_result)
     # prevents non-root from running service (and thus can't remote)
-    File.chmod!(rc_file, 0o740)
+    File.chmod!(rc_file, 0o540)
   end
 
   defp daemon_flags(%{user: user}), do: "-u #{user}"
