@@ -34,7 +34,14 @@ defmodule FreeBSD do
 
   def pkg_www, do: Mix.Project.config() |> Keyword.fetch!(:homepage_url)
 
-  def pkg_description, do: freebsd_config() |> Map.fetch!(:description)
+  def pkg_description do
+    freebsd_config()
+    |> Map.fetch!(:description)
+    |> case do
+      d when is_function(d) -> d.()
+      d -> d
+    end
+  end
 
   def pkg_maintainer, do: freebsd_config() |> Map.fetch!(:maintainer)
 

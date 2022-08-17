@@ -30,7 +30,7 @@ defmodule User.MixProject do
   defp freebsd do
     %{
       maintainer: "admin@example.com",
-      description: "freebsd package with non-root user",
+      description: fn -> "freebsd package with non-root user" end,
       user: "appuser"
     }
   end
