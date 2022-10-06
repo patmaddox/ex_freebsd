@@ -14,7 +14,6 @@ defmodule FreeBSD.MixProject do
       description: description(),
       source_url: "https://github.com/patmaddox/ex_freebsd",
       homepage_url: "https://github.com/patmaddox/ex_freebsd",
-      freebsd: freebsd(),
       elixirc_paths: elixirc_paths(Mix.env())
     ]
   end
@@ -63,15 +62,4 @@ defmodule FreeBSD.MixProject do
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
-
-  defp freebsd do
-    %{
-      description: description(),
-      maintainer: "pat@patmaddox.com",
-      deps: %{
-        # not really, it's just a small package to test
-        bash: %{version: "5.1", origin: "shells/bash"}
-      }
-    }
-  end
 end

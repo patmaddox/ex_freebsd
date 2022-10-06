@@ -1,35 +1,6 @@
-#!/bin/sh
-
-# GENERATED FILE! Do not modify.
-#
-# This script is run during `pkg install` after files
-# have been put in place.
-#
-
-CONFIG_DIR="<%= @config_dir %>"
-CONFIG_FILE="<%= @config_file %>"
-LIBEXEC="<%= @libexec_dir %>"
 PKG_NAME="<%= @pkg_name %>"
-
-
-echo "===> Creating config"
-if [ ! -d "${CONFIG_DIR}" ]
-then
-  echo "Dir: ${CONFIG_DIR}"
-  mkdir -p ${CONFIG_DIR}
-  chmod 0755 ${CONFIG_DIR}
-else
-  echo "Using existing config directory ${CONFIG_DIR}"
-fi
-
-if [ ! -f "${CONFIG_FILE}" ]
-then
-  echo "File: ${CONFIG_FILE}"
-  touch "${CONFIG_FILE}"
-  chmod 0750 ${CONFIG_FILE}
-else
-  echo "Using existing config file '${CONFIG_FILE}'"
-fi
+CONFIG_DIR="<%= @config_dir %>"
+CONFIG_FILE="<%= "#{@config_dir}/#{@env_file_name}" %>"
 
 <%= if @pkg_user do %>
 PKG_USER="<%= @pkg_user %>"
@@ -50,13 +21,14 @@ fi
 
 if ! ${PW} usershow ${PKG_USER} >/dev/null 2>&1; then
   echo "User: '${PKG_USER}'."
-  ${PW} useradd ${PKG_USER} -g ${PKG_USER} -c "${PKG_NAME} user" -d ${LIBEXEC} -s /bin/sh
+  ${PW} useradd ${PKG_USER} -g ${PKG_USER} -c "${PKG_NAME} user" -d /nonexistent -s /usr/sbin/nologin
 else
   echo "Using existing user: '${PKG_USER}'."
 fi
-
-echo "===> Updating permissions"
-echo "File: ${CONFIG_FILE}"
-chown root:${PKG_USER} ${CONFIG_FILE}
 <% end %>
 
+if [ ! -f $CONFIG_FILE ]
+then
+  echo "===> Creating config in ${CONFIG_FILE}"
+  cp ${CONFIG_DIR}/<%= @env_file_name %>.sample $CONFIG_FILE
+fi

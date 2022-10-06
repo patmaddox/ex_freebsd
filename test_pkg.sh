@@ -1,13 +1,19 @@
 #!/bin/sh
+set -e
 
-set +e
-which bash
-result=$?
-if [ $result -ne 1 ]
+basic_env="/usr/local/etc/freebsd_basic.d/freebsd_basic.env"
+user_env="/usr/local/etc/freebsd_user.d/freebsd_user.env"
+
+if [ -f /usr/local/bin/bash ]
 then
     echo "bash should not be installed yet (it's a package dependency)"
+    exit 1
 fi
-set -e
+
+if [ -f $basic_env ]; then
+    echo "${basic_env} should not exist yet"
+    exit 1
+fi
 
 echo "# Testing basic package"
 cd test/support/basic >/dev/null
@@ -19,14 +25,25 @@ mix release --overwrite
 mix freebsd.pkg
 pkg install -y freebsd_basic-*.pkg
 
-set +e
-which bash
-result=$?
-if [ $result -ne 0 ]
+if [ ! -f /usr/local/bin/bash ]
 then
     echo "bash should have been installed as a package dependency"
+    exit 1
 fi
+
+if [ ! -f $basic_env ]; then
+    echo "${basic_env} should have been installed"
+    exit 1
+fi
+
+set +e
+ls -l $basic_env | awk '{print $3}' | grep root
+result=$?
 set -e
+if [ $result -ne 0 ]; then
+    echo "${basic_env} should be owned by root"
+    exit 1
+fi
 
 echo "## Enabling service..."
 service freebsd_basic enable
@@ -42,11 +59,7 @@ then
     exit 1
 fi
 
-set +e
-ls /var/log/freebsd_basic.log
-result=$?
-set -e
-if [ $result -ne 1 ]
+if [ -f /var/log/freebsd_basic.log ]
 then
     echo "Log file should not exist yet"
     exit 1
@@ -68,19 +81,15 @@ set +e
 echo "## Checking that user is root"
 app_pid=`cat /var/run/freebsd_basic.pid`
 ps -p "${app_pid}" -o user | grep root
-set -e
 result=$?
+set -e
 if [ $result -ne 0 ]
 then
     echo "Process should be running as root"
     exit 1
 fi
 
-set +e
-ls /var/log/freebsd_basic.log
-result=$?
-set -e
-if [ $result -ne 0 ]
+if [ ! -f /var/log/freebsd_basic.log ]
 then
     echo "Log file should exist"
     exit 1
@@ -132,6 +141,11 @@ then
     exit 1
 fi
 
+if [ -f $user_env ]; then
+    echo "${user_env} should not exist yet"
+    exit 1
+fi
+
 rm -f freebsd_user-*.pkg
 mix local.hex --if-missing --force
 mix deps.get
@@ -150,8 +164,28 @@ then
     exit 1
 fi
 
+if [ ! -f $user_env ]; then
+    echo "${user_env} should have been installed"
+    exit 1
+fi
+
+set +e
+ls -l $user_env | awk '{print $3}' | grep root
+result=$?
+set -e
+if [ $result -ne 0 ]; then
+    echo "${user_env} should be owned by root"
+    exit 1
+fi
+
 echo "## Enabling service..."
 service freebsd_user enable
+
+if [ -f /var/log/freebsd_user.log ]
+then
+    echo "Log file should not exist yet"
+    exit 1
+fi
 
 echo "## Starting service..."
 service freebsd_user start
@@ -170,11 +204,41 @@ set +e
 echo "## Checking that user is not root"
 app_pid=`cat /var/run/freebsd_user.pid`
 ps -p "${app_pid}" -o user | grep appuser
-set -e
 result=$?
+set -e
 if [ $result -ne 0 ]
 then
     echo "Process should be running as appuser"
+    exit 1
+fi
+
+if [ ! -f /var/log/freebsd_user.log ]
+then
+    echo "Log file should exist"
+    exit 1
+fi
+
+set +e
+ls -l /var/log/freebsd_user.log | awk '{print $3}' | grep root
+result=$?
+set -e
+if [ $result -ne 0 ]; then
+    echo "freebsd_user.log should be owned by root"
+    exit 1
+fi
+
+if [ ! -d /var/run/freebsd_user ]; then
+    echo "/var/run/freebsd_user should exist"
+    exit 1
+fi
+
+set +e
+ls -ld /var/run/freebsd_user | awk '{print $3}' | grep appuser
+result=$?
+set -e
+if [ $result -ne 0 ]; then
+    echo "/var/run/freebsd_user should be owned by appuser"
+    ls -ld /var/run/freebsd_user
     exit 1
 fi
 
