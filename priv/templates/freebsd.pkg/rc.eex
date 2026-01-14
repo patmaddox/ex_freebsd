@@ -23,6 +23,7 @@ start_precmd="${name}_prestart"
 start_postcmd="${name}_poststart"
 start_cmd="${name}_start"
 remote_cmd="${name}_remote"
+status_cmd="${name}_status"
 extra_commands="remote"
 
 : ${<%= @conf_dir_var %>_CONF_DIR:="${confdir}"}
@@ -60,6 +61,22 @@ extra_commands="remote"
 {
   export TERM=xterm
   $command remote
+}
+
+<%= @pkg_name %>_status()
+{
+  if ! test -f "${pidfile}"; then
+    echo "${name} is not running."
+    return 1
+  fi
+
+  pid="$(cat ${pidfile})"
+  if ! ps -p "${pid}" >/dev/null; then
+    echo "${name} is not running."
+    return 1
+  fi
+
+  echo "${name} is running as pid ${pid}."
 }
 
 run_rc_command "$@"
