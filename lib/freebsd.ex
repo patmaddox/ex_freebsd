@@ -2,6 +2,47 @@ defmodule FreeBSD do
   @moduledoc """
   `mix.exs` config values that will be assigned to the EEX templates when
   building the package.
+
+  ## Configuration
+
+  Add a `:freebsd` key to your `mix.exs` project configuration:
+
+      defp freebsd do
+        %{
+          # Required
+          maintainer: "admin@example.com",
+          description: "My application description",
+
+          # Optional
+          user: "service-account",
+          deps: %{
+            bash: %{version: "5.1", origin: "shells/bash"}
+          },
+          sample_env_file: "config/production.env"
+        }
+      end
+
+  ### Options
+
+  - `:maintainer` (required) - Package maintainer email address
+  - `:description` (required) - Package description (can be a function or string)
+  - `:user` (optional) - Service user to create and run the application as
+  - `:deps` (optional) - FreeBSD package dependencies
+  - `:sample_env_file` (optional) - Path to sample environment file
+
+  #### `:sample_env_file`
+
+  Specifies a custom sample environment file to include in the package.
+  The file will be installed at `/usr/local/etc/<app>/<app>.env.sample`.
+
+  Priority order:
+  1. If configured and exists → use the configured file
+  2. If configured but missing → warning, then auto-detect
+  3. Auto-detect: checks for `sample.env`, `.env.sample`, or `.env` in project root
+  4. If nothing found → use default template
+
+  Paths can be relative (resolved from current working directory) or absolute.
+  Symlinks are followed automatically.
   """
 
   def pkg_manifest do
