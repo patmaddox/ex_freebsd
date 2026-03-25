@@ -47,7 +47,12 @@ Add a `freebsd` key to `mix.exs` project config.
       # optional, documented at https://www.freebsd.org/cgi/man.cgi?pkg-create(8)
       deps: %{
         bash: %{version: "5.1", origin: "shells/bash"}
-      }
+      },
+
+      # optional: specify a custom sample env file for the package
+      # If not specified, auto-detects: sample.env, .env.sample, or .env
+      # Falls back to a default template if none found
+      sample_env_file: "config/production.env" # relative or absolute path
     }
   end
 ```
@@ -74,6 +79,8 @@ After installing the package, you can define application-specific environment va
 DATABASE_URL=ecto://user:password@host/db
 AWS_ACCESS_KEY_ID=abc123def456
 ```
+
+A sample env file is included at `/usr/local/etc/<appname>/<appname>.env.sample`. You can customize which file is used as the sample by setting `sample_env_file` in your `freebsd` config, or let it auto-detect `sample.env`, `.env.sample`, or `.env` in your project root.
 
 Logs go to `/var/log/<appname>.log`. Crash dumps default to `/var/log/<appname>_erl_crash.dump`.
 Any additional temp app data defaults to `/var/run/<appname>`.
