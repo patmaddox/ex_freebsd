@@ -90,4 +90,47 @@ defmodule FreeBSD do
       }
     )
   end
+
+  def sample_file_contents do
+    project_root = Mix.Project.config() |> Keyword.fetch!(:app_path) |> to_string()
+
+    case freebsd_config() |> Map.get(:sample_env_file) do
+      nil ->
+        auto_detect_sample_file(project_root)
+
+      path ->
+        if File.exists?(path) do
+          IO.puts("Using configured env sample at #{path}")
+          "# Source: #{path}\n#{File.read!(path)}"
+        else
+          IO.warn("Configured sample_env_file '#{path}' not found, trying auto-detection")
+          auto_detect_sample_file(project_root)
+        end
+    end
+  end
+
+  defp auto_detect_sample_file(project_root) do
+    candidate_paths = [
+      Path.join(project_root, "sample.env"),
+      Path.join(project_root, ".env.sample"),
+      Path.join(project_root, ".env")
+    ]
+
+    case Enum.find(candidate_paths, &File.exists?/1) do
+      nil ->
+        default_sample_contents()
+
+      path ->
+        IO.puts("Found env sample at #{path}, using it")
+        "# Source: #{path}\n#{File.read!(path)}"
+    end
+  end
+
+  defp default_sample_contents do
+    """
+    # Environment variables defined here will be available to your application.
+    # RELEASE_COOKIE="generate with Base.url_encode64(:crypto.strong_rand_bytes(40))"
+    # DATABASE_URL="ecto://username:password@host/database"
+    """
+  end
 end
